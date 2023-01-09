@@ -2,7 +2,7 @@
 
 * {
   font-family: "Nunito", sans-serif;
-  scrollbar-color: #6e87de #2e313b;
+  scrollbar-color: #6ebede #2e313b;
 }
 
 body {
@@ -16,7 +16,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #6e87de;
+  background-color: #6ebede;
   border-radius: 20px;
 }
 
@@ -108,4 +108,26 @@ body {
 
 .middle {
   vertical-align: -0.2em;
+}
+
+#scrollTopButton {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 170px;
+  height: 45px;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 75px;
+  transition: all 0.3s ease;
+  background: linear-gradient(to right, #de9b6e, #b97249);
+  color: var(--white);
+  color: white;
+}
+#scrollTopButton:hover {
+  background: linear-gradient(to right, #de9b6e, #b97249);
+  box-shadow: 0 0 10px rgba(222, 177, 110, 0.5),
+    0 0 20px rgba(222, 174, 110, 0.3), 0 0 30px rgba(110, 135, 222, 0.1);
+  transform: translateY(-2px);
 }
