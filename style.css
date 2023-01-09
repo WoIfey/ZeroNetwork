@@ -23,13 +23,10 @@ body {
 #main {
   height: 100vh;
   color: white;
-  background: rgba(0, 0, 0, 0.856);
+  background: rgba(0, 0, 0, 0.925);
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  background-image: url(Images/bg.png);
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 #section1 {
@@ -83,4 +80,32 @@ body {
   position: absolute;
   z-index: -1;
   object-fit: fill;
+}
+#video2 {
+  width: 800px;
+  height: 800px;
+}
+
+#discord {
+  width: 130px;
+  height: 45px;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 75px;
+  transition: all 0.3s ease;
+  background: linear-gradient(to right, #6e87de, #5449b9);
+  color: var(--white);
+  color: white;
+}
+
+#discord:hover {
+  background: linear-gradient(to right, #6e87de, #6749b9);
+  box-shadow: 0 0 10px rgba(110, 135, 222, 0.5),
+    0 0 20px rgba(110, 135, 222, 0.3), 0 0 30px rgba(110, 135, 222, 0.1);
+  transform: translateY(-2px);
+}
+
+.middle {
+  vertical-align: -0.2em;
 }
