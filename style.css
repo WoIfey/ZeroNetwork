@@ -23,7 +23,7 @@ body {
 #main {
   height: 110vh;
   color: white;
-  background: rgba(0, 0, 0, 0.795);
+  background: rgba(0, 0, 0, 0.925);
   display: flex;
   justify-content: space-evenly;
   align-items: center;
@@ -119,6 +119,7 @@ body {
   background: linear-gradient(to right, #de9b6e, #b97249);
   color: var(--white);
   color: white;
+  visibility: hidden;
 }
 #scrollTopButton:hover {
   background: linear-gradient(to right, #de9b6e, #b97249);

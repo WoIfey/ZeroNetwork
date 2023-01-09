@@ -2,9 +2,9 @@ const scrollTopButton = document.getElementById("scrollTopButton");
 
 window.onscroll = function () {
   if (window.pageYOffset > 1500) {
-    scrollTopButton.style.display = "block";
+    scrollTopButton.style.visibility = "visible";
   } else {
-    scrollTopButton.style.display = "none";
+    scrollTopButton.style.visibility = "hidden";
   }
 };
 
