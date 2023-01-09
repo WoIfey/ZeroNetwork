@@ -1,7 +1,7 @@
 const scrollTopButton = document.getElementById("scrollTopButton");
 
 window.onscroll = function () {
-  if (window.pageYOffset > 2300) {
+  if (window.pageYOffset > 1500) {
     scrollTopButton.style.display = "block";
   } else {
     scrollTopButton.style.display = "none";
