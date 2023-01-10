@@ -65,7 +65,14 @@ body {
   width: 650px;
 }
 
-#padding {
+#iframe,
+#button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#button {
   padding: 100px;
 }
 
@@ -82,7 +89,12 @@ body {
   height: 600px;
 }
 
-#discord {
+#button a {
+  text-decoration: none;
+}
+
+.btn,
+.btn2 {
   width: 130px;
   height: 45px;
   font-size: 20px;
@@ -91,15 +103,31 @@ body {
   border-radius: 75px;
   transition: all 0.3s ease;
   background: linear-gradient(to right, #6e87de, #5449b9);
-  color: var(--white);
   color: white;
 }
 
-#discord:hover {
+.btn2 {
+  width: 170px;
+  background: linear-gradient(to right, #5b80b1, #49a8b9);
+}
+.btn2,
+.hidden {
+  display: none;
+}
+
+.btn:hover {
   background: linear-gradient(to right, #6e87de, #6749b9);
   box-shadow: 0 0 10px rgba(110, 135, 222, 0.5),
     0 0 20px rgba(110, 135, 222, 0.3), 0 0 30px rgba(110, 135, 222, 0.1);
   transform: translateY(-2px);
+  color: white;
+}
+.btn2:hover {
+  background: linear-gradient(to right, #5b80b1, #49a8b9);
+  box-shadow: 0 0 10px rgba(110, 172, 222, 0.5),
+    0 0 20px rgba(110, 177, 222, 0.3), 0 0 30px rgba(110, 135, 222, 0.1);
+  transform: translateY(-2px);
+  color: white;
 }
 
 .middle {
@@ -132,4 +160,54 @@ body {
 #player-count,
 #online-status {
   color: greenyellow;
+}
+
+@media only screen and (max-width: 800px) {
+  html {
+    overflow-x: hidden;
+  }
+  #main {
+    justify-content: center;
+  }
+  #main div {
+    width: 300px;
+  }
+  #video {
+    width: 100%;
+    height: 100%;
+    object-fit: none;
+  }
+  #video2,
+  #section2 h2,
+  #plugins {
+    display: none;
+  }
+  #section1 {
+    flex-direction: column;
+  }
+  #section1bg {
+    width: 300px;
+  }
+  #padding {
+    padding: 0;
+  }
+  .btn2,
+  .hidden {
+    display: inherit;
+  }
+  #section1pic {
+    width: 200px;
+    height: 100px;
+  }
+  #section1text h3 {
+    font-size: 20px;
+  }
+  #section1text p {
+    font-size: 16px;
+    width: 180px !important;
+  }
+  #section1text h6 {
+    font-size: 15px;
+    width: 300px !important;
+  }
 }
