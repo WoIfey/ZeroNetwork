@@ -17,21 +17,33 @@ const team = [
   },
 ]
 
-export default function Example() {
-  const [serverData, setServerData] = useState({})
+function App() {
+  const [server, setServer] = useState({})
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
-      {
-        const response = await fetch('https://mcapi.us/server/status?ip=imher0.ddns.net')
-        const data = await response.json()
-        console.log(serverData)
-        setServerData(data)
+      try {
+        const res = await fetch('https://api.mcsrvstat.us/3/imher0.ddns.net')
+        const data = await res.json()
+        setServer(data)
+      } catch (error) {
+        console.error('Error fetching server data:', error)
+      } finally {
+        setLoading(false)
       }
     }
 
     fetchData()
   }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-gray-900">
@@ -56,13 +68,13 @@ export default function Example() {
             <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">The Im Her Zero Network</h2>
             <div className='mt-6 text-lg leading-8 text-gray-300'>
               <div className='flex justify-center items-center gap-4'>
-                <h1>imher0.ddns.net</h1>
-                <img src={serverData.favicon} alt="" className='h-10 w-10' />
-                <p>{serverData.server.name}</p>
+                <h1>{server.hostname}</h1>
+                <img src={server.icon} alt="" className='h-10 w-10' />
+                <p>{server.version}</p>
               </div>
-              <p className='italic font-light tracking-wider'>{/* "{serverData.motd_json}" */}</p>
+              <p className='italic font-light tracking-wider'>"{server.motd.clean}"</p>
               <div className='mt-2'>
-                Server is <span className={serverData.online ? 'text-green-500' : 'text-red-500'}>{serverData.online ? 'online' : 'offline'}</span> and there are <span>{serverData.players.now}/{serverData.players.max}</span> players
+                Server is <span className={server.online ? 'text-green-500' : 'text-red-500'}>{server.online ? 'online' : 'offline'}</span> and there are <span>{server.players.online}/{server.players.max}</span> players
                 currently playing!
               </div>
             </div>
@@ -73,7 +85,7 @@ export default function Example() {
           <ol className="relative border-s mt-32 border-gray-200 dark:border-gray-700">
             <li className="mb-10 ms-4">
               <div className="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -start-1.5 border border-white dark:border-gray-900 dark:bg-gray-400"></div>
-              <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">2024 <span className={serverData.online ? 'text-green-500' : 'text-red-500'}>{serverData.online ? 'online' : 'offline'}</span></time>
+              <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">2024 <span className={server.online ? 'text-green-500' : 'text-red-500'}>{server.online ? 'online' : 'offline'}</span></time>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">All the Mods 9</h3>
               <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">ATM9 modpack!</p>
               <a href="https://www.curseforge.com/minecraft/modpacks/all-the-mods-9" target='_blank' className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">Download Pack <svg className="w-3 h-3 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -138,7 +150,7 @@ export default function Example() {
       <footer className="relative mt-32 sm:mt-40">
         <div className="mx-auto max-w-7xl px-6 pb-8 lg:px-8">
           <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24 flex justify-between">
-            <p className="text-xs leading-5 text-gray-400">&copy; 2024 Joe, Inc.</p>
+            <p className="text-xs leading-5 text-gray-400">© 2024 Joe, Inc.</p>
             <a href="https://discord.gg/a6JrZMa">
               <img src='public/discord.svg' className="w-6 h-6"></img>
             </a>
@@ -149,3 +161,5 @@ export default function Example() {
 
   )
 }
+
+export default App
