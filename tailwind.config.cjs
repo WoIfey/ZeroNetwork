@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        custom: ["-webkit-linear-gradient(#4e87d1, #A5C5DF)"],
+      },
+    },
   },
   plugins: [],
 };
