@@ -2,35 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes scroll {
-    0% {
-        transform: translateX(0%);
-    }
-
-    100% {
-        transform: translateX(-100%);
-    }
+::-webkit-scrollbar {
+    width: 4px;
+    background: #202123
 }
 
-.scrolling-container {
-    display: flex;
-    animation: scroll 40s linear infinite;
-    width: 300%;
-}
-
-.repeat {
-    display: inline-block;
-    white-space: nowrap;
-    width: 100%;
-}
-
-body::-webkit-scrollbar {
-    display: none;
-}
-
-body {
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
+::-webkit-scrollbar-thumb {
+    background: #304c89;
 }

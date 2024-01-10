@@ -21,6 +21,7 @@ function App() {
   const [server1, setServer1] = useState({})
   const [server2, setServer2] = useState({})
   const [loading, setLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +35,7 @@ function App() {
         setServer1(data1)
         setServer2(data2)
       } catch (error) {
-        console.error('Error fetching server data:', error)
+        alert('Error fetching server data:', error)
       } finally {
         setLoading(false)
       }
@@ -42,6 +43,16 @@ function App() {
 
     fetchData()
   }, [])
+
+  const copy = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1000)
+    } catch (err) {
+      alert('Failed to copy text: ', err)
+    }
+  }
 
   // When server is offline
   const checkOnline = server1 && server1.online
@@ -75,11 +86,22 @@ function App() {
             <h2 className="text-4xl font-bold tracking-tight bg-[#4e87d1] sm:text-6xl bg-custom bg-clip-text text-transparent">The Im Her Zero Network</h2>
             <div className='mt-4 flex justify-center items-center flex-col text-lg leading-8 text-gray-300'>
               {checkOnline && checkPlayers && (
-                <div className='flex justify-center items-center gap-4'>
-                  <h1 className='font-bold bg-slate-900 rounded px-2'>{server1.hostname}</h1>
-                  <img src={server1.icon} alt="" className='h-10 w-10' />
-                  <p>{server1.version}</p>
+                <div className='flex flex-col justify-center items-center gap-1'>
+                  <div className='flex flex-col md:flex-row'>
+                    <div className='flex gap-2'>
+                      <div className="group flex relative">
+                        <h1 className='font-bold bg-slate-900 rounded px-2 cursor-pointer' onClick={() => copy(server1.hostname)}>{server1.hostname}</h1>
+                        <span className="group-hover:opacity-100 transition-opacity bg-gray-700 px-2 py-1 text-sm text-gray-100 rounded-md absolute left-1/2 
+    -translate-x-1/2 -translate-y-12 opacity-0 m-4 mx-auto">{copied ? 'Copied!' : 'Copy'}</span>
+                      </div>
+                      <img src={server1.icon} alt="Icon" className='h-8 w-8' />
+                    </div>
+                    <div>
+                      <p className='md:ml-2 font-bold'>{server1.version}</p>
+                    </div>
+                  </div>
                 </div>
+
               )}
               {!checkOnline && (
                 <div className='italic font-light'>
@@ -89,8 +111,8 @@ function App() {
               )}
               {checkOnline && checkPlayers && (
                 <div className='mt-1'>
-                  <p className='italic font-light'>"{server1.motd.html}"</p>
                   Server is <span className="text-green-500 font-bold">online</span> and there are <span className='font-bold'>{server1.players.online}/{server1.players.max}</span> players currently playing!
+                  <p className='italic font-light text-sm mt-1'>"{server1.motd.clean}"</p>
                 </div>
               )}
               <div className='text-xs text-slate-500 mt-1'>other server: {server2.hostname} {server2.online ? 'online' : 'offline'}</div>
