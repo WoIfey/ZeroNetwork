@@ -61,7 +61,7 @@ function App() {
   return (
     <div className="bg-gray-900">
       {loading && (
-        <div className="flex items-center justify-center h-screen bg-gray-900">
+        <div className="fixed inset-0 bg-black opacity-90 z-50 flex items-center justify-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
       )}
