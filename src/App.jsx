@@ -128,9 +128,15 @@ function App() {
 
               )}
               {!checkOnline && (
-                <div className='italic font-light'>
-                  <p className='text-2xl'>Server is currently <span className='text-red-500'>offline.</span></p>
-                  <p className='text-base mt-2'>Check our <a href="https://discord.gg/a6JrZMa" target='_blank' className='text-blue-500 underline'>Discord Server</a> for updates.</p>
+                <div>
+                  <div className='flex gap-2'>
+                    <div className="group flex relative">
+                      <h1 className='italic mt-0.5 dark:bg-slate-900 bg-gray-200 text-slate-500 dark:text-white rounded px-2 cursor-pointer' onClick={() => copy(server1.hostname)}>{server1.hostname}</h1>
+                      <span className="pointer-events-none group-hover:opacity-100 transition-opacity bg-gray-700 px-2 py-1 text-sm text-gray-100 rounded-md absolute left-1/2 
+    -translate-x-1/2 -translate-y-[2.9rem] opacity-0 m-4 mx-auto">{copied ? 'Copied!' : 'Copy'}</span>
+                    </div> <p className='italic font-light text-2xl'>is currently <span className='text-red-500'>offline.</span></p>
+                  </div>
+                  <p className='text-base mt-2'>Check our <a href="https://discord.gg/a6JrZMa" target='_blank' className='text-blue-500 hover:underline'>Discord Server</a> for updates.</p>
                 </div>
               )}
               {checkOnline && checkPlayers && (
