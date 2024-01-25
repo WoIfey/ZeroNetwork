@@ -108,7 +108,7 @@ function App() {
         <div className="px-6 pt-14 lg:px-8">
           <div className="mx-auto max-w-3xl pt-24 text-center sm:pt-40">
             <h2 className="text-4xl font-bold tracking-tight bg-[#4e87d1] md:text-6xl bg-custom bg-clip-text text-transparent">The Im Her Zero Network</h2>
-            <div className='mt-4 md:mt-8 flex justify-center items-center flex-col text-lg leading-8 text-gray-300'>
+            <div className='mt-4 md:mt-6 flex justify-center items-center flex-col text-lg leading-8 text-gray-300'>
               {checkOnline && checkPlayers && (
                 <div className='flex flex-col justify-center items-center gap-1'>
                   <div className='flex flex-col sm:flex-row'>
@@ -129,20 +129,20 @@ function App() {
               )}
               {!checkOnline && (
                 <div>
-                  <div className='flex flex-col sm:flex-row gap-2'>
+                  <div className='flex flex-col sm:flex-row gap-1 sm:gap-2'>
                     <div className="group flex flex-col sm:flex-row items-center relative">
                       <h1 className='italic mt-0.5 dark:bg-slate-900 bg-gray-200 text-slate-500 dark:text-white rounded px-2 cursor-pointer' onClick={() => copy(server1.hostname)}>{server1.hostname}</h1>
                       <span className="pointer-events-none group-hover:opacity-100 transition-opacity bg-gray-700 px-2 py-1 text-sm text-gray-100 rounded-md absolute left-1/2 
-    -translate-x-1/2 -translate-y-[2.9rem] opacity-0 m-4 mx-auto">{copied ? 'Copied!' : 'Copy'}</span>
+    -translate-x-1/2 -translate-y-11 sm:-translate-y-8 opacity-0 m-4 mx-auto">{copied ? 'Copied!' : 'Copy'}</span>
                     </div><p className='italic font-light text-2xl'>is currently <span className='text-red-500'>offline.</span></p>
                   </div>
                   <p className='text-base mt-2'>Check our <a href="https://discord.gg/a6JrZMa" target='_blank' className='text-blue-500 hover:underline'>Discord Server</a> for updates.</p>
                 </div>
               )}
               {checkOnline && checkPlayers && (
-                <div className='mt-2'>
+                <div className='mt-2 sm:mt-4'>
                   Server is <span className="text-green-500 font-bold">online</span> and there are <span className='font-bold'>{server1.players.online}/{server1.players.max}</span> players currently playing!
-                  <p className='italic font-light text-sm mt-2'>"{server1.motd.clean}"</p>
+                  <p className='italic font-light text-sm mt-4 sm:mt-2'>"{server1.motd.clean}"</p>
                 </div>
               )}
               <div className="text-xs mt-2 flex justify-center items-center relative gap-1">
