@@ -54,7 +54,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res1 = await fetch('https://api.mcsrvstat.us/3/play.hypixel.net')
+        const res1 = await fetch('https://api.mcsrvstat.us/3/imher0.ddns.net')
         const data1 = await res1.json()
 
         const res2 = await fetch('https://api.mcsrvstat.us/3/joe.onthewifi.com')
