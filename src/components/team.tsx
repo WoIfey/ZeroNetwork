@@ -18,7 +18,7 @@ const teams = [
 	},
 ]
 
-export default function team() {
+export default function Team() {
 	return (
 		<div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-40 lg:px-8">
 			<div className="mx-auto max-w-2xl lg:mx-0">

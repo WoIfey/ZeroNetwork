@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function footer() {
+export default function Footer() {
 	return (
 		<footer className="relative mt-32 sm:mt-40">
 			<div className="mx-auto max-w-7xl px-6 pb-8 lg:px-8">

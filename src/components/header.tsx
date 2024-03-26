@@ -1,8 +1,9 @@
+'use client'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
-export default function header({ server1, server2 }: any) {
+export default function Header({ server1, server2 }: any) {
 	const [copied, setCopied] = useState(false)
 	const [alert, setAlert] = useState('')
 
@@ -131,7 +132,7 @@ export default function header({ server1, server2 }: any) {
 							</span>{' '}
 							players currently playing!
 							<p className="italic font-light text-sm mt-4 sm:mt-2">
-								"{server1.motd.clean}"
+								&quot;{server1.motd.clean}&quot;
 							</p>
 						</div>
 					)}

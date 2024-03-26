@@ -6,7 +6,7 @@ import Description from './description'
 import Team from './team'
 import Header from './header'
 
-type Server = {
+type props = {
 	online: boolean
 	players: {
 		online: number
@@ -20,7 +20,7 @@ type Server = {
 	}
 }
 
-const Default: Server = {
+const Default: props = {
 	online: false,
 	players: {
 		online: 0,
@@ -34,9 +34,9 @@ const Default: Server = {
 	},
 }
 
-export default function server() {
-	const [server1, setServer1] = useState<Server>(Default)
-	const [server2, setServer2] = useState<Server>(Default)
+export default function Server() {
+	const [server1, setServer1] = useState<props>(Default)
+	const [server2, setServer2] = useState<props>(Default)
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {

@@ -4,7 +4,7 @@ type props = {
 	status: boolean
 }
 
-export default function timeline({ status }: props) {
+export default function Timeline({ status }: props) {
 	return (
 		<div className="px-6 pt-14 lg:px-8 flex justify-center items-center flex-col">
 			<ol className="relative border-s mt-24 border-gray-200 dark:border-gray-700">
