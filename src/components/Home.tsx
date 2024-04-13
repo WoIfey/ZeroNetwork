@@ -1,11 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
-import Footer from './Footer'
-import Timeline from './Timeline'
-import Description from './Description'
-import Loading from './Loading'
-import Team from './Team'
-import Header from './Header'
+import Footer from '@/components/Footer'
+import Timeline from '@/components/Timeline'
+import Description from '@/components/Description'
+import Loading from '@/components/Loading'
+import Team from '@/components/Team'
+import Header from '@/components/Header'
 
 type props = {
 	online: boolean
