@@ -11,7 +11,7 @@ const teams = [
 	},
 	{
 		name: 'Wolfey',
-		role: 'Design & Website',
+		role: 'Web Designer',
 		href: 'https://github.com/WoIfey',
 		src: '/wolfey.png',
 		location: 'Finland',
