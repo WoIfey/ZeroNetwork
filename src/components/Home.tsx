@@ -86,7 +86,13 @@ export default function Server({
 						}}
 					/>
 				</div>
-				<Header server1={server1} server2={server2} />
+				<Header
+					server1={server1}
+					server2={server2}
+					alert={servers[0].alert}
+					alert_visible={servers[0].alert_visible}
+					server2_visible={servers[0].server2_visible}
+				/>
 				<Timeline timeline={timeline} />
 				<Description />
 				<Team />
