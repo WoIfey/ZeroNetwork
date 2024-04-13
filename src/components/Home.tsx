@@ -6,6 +6,7 @@ import Description from '@/components/Description'
 import Loading from '@/components/Loading'
 import Team from '@/components/Team'
 import Header from '@/components/Header'
+import { refresh } from '@/app/actions'
 
 type props = {
 	online: boolean
@@ -47,6 +48,7 @@ export default function Server({
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
+		refresh()
 		const fetchData = async () => {
 			try {
 				const res1 = await fetch(`https://api.mcsrvstat.us/3/${servers[0].server1}`)
