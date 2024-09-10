@@ -1,1 +1,3 @@
-### ZeroNetwork
+# ZeroNetwork
+
+Minecraft server status.

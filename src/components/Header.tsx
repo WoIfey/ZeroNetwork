@@ -1,146 +1,134 @@
 'use client'
+
+import { useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
-import Alert from '@/components/Alert'
+import { AlertCircle, Copy } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { toast } from 'sonner'
 
-export default function Header({
+export function Header({ alert, alertVisible }: HeaderProps) {
+	return (
+		<header className="px-6 lg:px-8 pt-28">
+			<div className="mx-auto max-w-3xl text-center">
+				{alertVisible && (
+					<Alert className="mb-4 bg-transparent border-none">
+						<AlertDescription className="flex items-center gap-2 justify-center">
+							<AlertCircle className="size-4" />
+							{alert}
+						</AlertDescription>
+					</Alert>
+				)}
+				<h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent sm:text-5xl md:text-6xl">
+					The Im Her Zero Network
+				</h1>
+			</div>
+		</header>
+	)
+}
+
+export function ServerStatus({
 	server1,
 	server2,
-	alert,
-	alert_visible,
-	server2_visible,
-}: any) {
-	const [copied, setCopied] = useState(false)
-
-	// When server is offline
-	const checkOnline = server1 && server1.online
-	const checkPlayers = server1 && server1.players
-
-	const copy = async (text: string) => {
+	server2Visible,
+}: ServerStatusProps) {
+	const copyToClipboard = useCallback(async (text: string) => {
 		try {
 			await navigator.clipboard.writeText(text)
-			setCopied(true)
-			setTimeout(() => setCopied(false), 1000)
+			toast.success('Server IP copied to clipboard.')
 		} catch (err) {
-			console.log('🤨 it failed to copy to clipboard because: ', err)
+			console.error('Failed to copy to clipboard:', err)
+			toast.error('Failed to copy server IP.')
 		}
-	}
-	return (
-		<>
-			<div className="px-6 pt-14 lg:px-8">
-				<div className="mx-auto max-w-3xl pt-24 text-center sm:pt-40">
-					<div className="flex flex-col items-center">
-						{alert_visible && <Alert text={alert} />}
-						<h2 className="text-4xl font-bold tracking-tight bg-[#4e87d1] md:text-6xl bg-custom bg-clip-text text-transparent">
-							The Im Her Zero Network
-						</h2>
+	}, [])
+
+	const ServerCard = ({ server }: { server: ServerInfo }) => (
+		<Card className="bg-white dark:bg-gray-800">
+			<CardHeader className="p-6 pb-0">
+				<CardTitle className="flex items-center justify-between">
+					<div className="flex items-center gap-2">
+						<TooltipProvider>
+							<Tooltip delayDuration={100}>
+								<TooltipTrigger asChild>
+									<Button size="sm" onClick={() => copyToClipboard(server.hostname)}>
+										{server.hostname}
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent>Copy to clipboard</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+						{server.icon && (
+							<Image
+								src={server.icon}
+								alt={`${server.hostname} icon`}
+								height={32}
+								width={32}
+								className="size-8"
+							/>
+						)}
 					</div>
-					<div className="mt-4 md:mt-6 flex justify-center items-center flex-col text-lg leading-8 text-gray-300">
-						{checkOnline && checkPlayers && (
-							<div className="flex flex-col justify-center items-center gap-1">
-								<div className="flex flex-col sm:flex-row">
-									<div className="flex gap-2">
-										<div className="group flex relative">
-											<h1
-												className="font-bold dark:bg-slate-900 bg-gray-200 text-slate-500 dark:text-white rounded px-2 cursor-pointer"
-												onClick={() => copy(server1.hostname)}
-											>
-												{server1.hostname}
-											</h1>
-											<span
-												className="pointer-events-none group-hover:opacity-100 transition-opacity bg-gray-700 px-2 py-1 text-sm text-gray-100 rounded-md absolute left-1/2 
-											-translate-x-1/2 -translate-y-[2.9rem] opacity-0 m-4 mx-auto"
-											>
-												{copied ? 'Copied!' : 'Copy'}
-											</span>
-										</div>
-										<Image
-											src={server1.icon}
-											alt="Icon"
-											height={32}
-											width={32}
-											className="h-8 w-8"
-										/>
-									</div>
-									<div>
-										<p className="sm:ml-2 font-bold">{server1.version}</p>
-									</div>
-								</div>
-							</div>
-						)}
-						{!checkOnline && (
-							<div>
-								<div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-									<div className="group flex flex-col sm:flex-row items-center relative">
-										<h1
-											className="italic mt-0.5 dark:bg-slate-900 bg-gray-200 text-slate-500 dark:text-white rounded px-2 cursor-pointer"
-											onClick={() => copy(server1.hostname)}
-										>
-											{server1.hostname}
-										</h1>
-										<span
-											className="pointer-events-none group-hover:opacity-100 transition-opacity bg-gray-700 px-2 py-1 text-sm text-gray-100 rounded-md absolute left-1/2 
-										-translate-x-1/2 -translate-y-11 sm:-translate-y-8 opacity-0 m-4 mx-auto"
-										>
-											{copied ? 'Copied!' : 'Copy'}
-										</span>
-									</div>
-									<p className="italic font-light text-2xl">
-										is currently <span className="text-red-500">offline.</span>
-									</p>
-								</div>
-								<p className="text-base mt-2">
-									Check our{' '}
-									<Link
-										href="https://discord.gg/a6JrZMa"
-										target="_blank"
-										className="text-blue-500 hover:underline"
-									>
-										Discord Server
-									</Link>{' '}
-									for updates.
-								</p>
-							</div>
-						)}
-						{checkOnline && checkPlayers && (
-							<div className="mt-2 sm:mt-4">
-								Server is <span className="text-green-500 font-bold">online</span> and
-								there are{' '}
+					<div className="flex gap-4 items-center">
+						{server.online ? <Badge>{server.version}</Badge> : null}
+						<div className="relative">
+							<div
+								className={`size-3 rounded-full ${
+									server.online ? 'bg-green-500' : 'bg-red-500'
+								}`}
+							/>
+							{server.online && (
+								<div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
+							)}
+						</div>
+					</div>
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				{server.online ? (
+					<>
+						{server.players && (
+							<p className="text-sm dark:text-gray-300 text-gray-600 pt-2">
+								Players:{' '}
 								<span className="font-bold">
-									{server1.players.online}/{server1.players.max}
-								</span>{' '}
-								players currently playing!
-								<p className="italic font-light text-sm mt-4 sm:mt-2">
-									&quot;{server1.motd.clean}&quot;
-								</p>
-							</div>
+									{server.players.online}/{server.players.max}
+								</span>
+							</p>
 						)}
-						{server2_visible && (
-							<div className="text-xs mt-3 flex justify-center items-center relative gap-1">
-								<p className="text-slate-400">other server:</p>
-								<div className="relative group flex">
-									<h1
-										className="dark:bg-slate-900 bg-gray-200 text-slate-500 dark:text-slate-400 font-bold rounded py-0.5 px-2 cursor-pointer relative"
-										onClick={() => copy(server2.hostname || '')}
-									>
-										{server2.hostname}
-									</h1>
-									<span
-										className="pointer-events-none group-hover:opacity-100 transition-opacity bg-gray-700 px-2 py-1 text-sm text-gray-100 rounded-md absolute 
-									-translate-x-1/2 -translate-y-14 opacity-0 m-4 mx-auto top-1/2 left-1/2 transform"
-									>
-										{copied ? 'Copied!' : 'Copy'}
-									</span>
-								</div>
-								<p className={server2.online ? 'text-[#618d5c]' : 'text-[#8b6464]'}>
-									{server2.online ? 'online' : 'offline'}
-								</p>
-							</div>
+						{server.motd && (
+							<p className="italic text-sm mt-2 text-muted-foreground">
+								&quot;{server.motd.clean}&quot;
+							</p>
 						)}
-					</div>
-				</div>
-			</div>
-		</>
+					</>
+				) : (
+					<p className="text-sm mt-2">
+						Check our{' '}
+						<Link
+							href="https://discord.gg/a6JrZMa"
+							target="_blank"
+							className="text-blue-500 hover:underline"
+						>
+							Discord Server
+						</Link>{' '}
+						for updates.
+					</p>
+				)}
+			</CardContent>
+		</Card>
+	)
+
+	return (
+		<div className="mx-auto max-w-3xl mt-16 space-y-8">
+			<ServerCard server={server1} />
+			{server2Visible && <ServerCard server={server2} />}
+		</div>
 	)
 }
