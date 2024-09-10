@@ -22,8 +22,8 @@ export function Header({ alert, alertVisible }: HeaderProps) {
 			<div className="mx-auto max-w-3xl text-center">
 				{alertVisible && (
 					<Alert className="mb-4 bg-transparent border-none">
-						<AlertDescription className="flex items-center gap-2 justify-center">
-							<AlertCircle className="size-4" />
+						<AlertDescription className="flex flex-col sm:flex-row items-center gap-2 justify-center">
+							<AlertCircle className="size-5 sm:size-4" />
 							{alert}
 						</AlertDescription>
 					</Alert>
@@ -52,33 +52,45 @@ export function ServerStatus({
 	}, [])
 
 	const ServerCard = ({ server }: { server: ServerInfo }) => (
-		<Card className="bg-white dark:bg-gray-800">
+		<Card className="bg-white dark:bg-gray-800 sm:rounded-lg rounded-none">
 			<CardHeader className="p-6 pb-0">
-				<CardTitle className="flex items-center justify-between">
-					<div className="flex items-center gap-2">
-						<TooltipProvider>
-							<Tooltip delayDuration={100}>
-								<TooltipTrigger asChild>
-									<Button size="sm" onClick={() => copyToClipboard(server.hostname)}>
-										{server.hostname}
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>Copy to clipboard</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
-						{server.icon && (
-							<Image
-								src={server.icon}
-								alt={`${server.hostname} icon`}
-								height={32}
-								width={32}
-								className="size-8"
+				<CardTitle className="flex flex-col sm:flex-row items-start gap-3 sm:gap-0 sm:items-center justify-between">
+					<div className="flex items-center justify-between gap-2 sm:w-auto w-full">
+						<div className="flex gap-2 items-center">
+							<TooltipProvider>
+								<Tooltip delayDuration={100}>
+									<TooltipTrigger asChild>
+										<Button size="sm" onClick={() => copyToClipboard(server.hostname)}>
+											{server.hostname}
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>Copy to clipboard</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+							{server.icon && (
+								<Image
+									src={server.icon}
+									alt={`${server.hostname} icon`}
+									height={32}
+									width={32}
+									className="size-8"
+								/>
+							)}
+						</div>
+						<div className="relative sm:hidden block">
+							<div
+								className={`size-3 rounded-full ${
+									server.online ? 'bg-green-500' : 'bg-red-500'
+								}`}
 							/>
-						)}
+							{server.online && (
+								<div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
+							)}
+						</div>
 					</div>
 					<div className="flex gap-4 items-center">
-						{server.online ? <Badge>{server.version}</Badge> : null}
-						<div className="relative">
+						{server.online && <Badge>{server.version}</Badge>}
+						<div className="relative sm:block hidden">
 							<div
 								className={`size-3 rounded-full ${
 									server.online ? 'bg-green-500' : 'bg-red-500'
@@ -126,7 +138,7 @@ export function ServerStatus({
 	)
 
 	return (
-		<div className="mx-auto max-w-3xl mt-16 space-y-8">
+		<div className="mx-auto max-w-3xl mt-10 sm:mt-16 space-y-8">
 			<ServerCard server={server1} />
 			{server2Visible && <ServerCard server={server2} />}
 		</div>

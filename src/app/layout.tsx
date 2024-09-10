@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 	description: "ImHer0's Minecraft Server",
 	openGraph: {
 		title: 'Im Her Zero Network',
-		description: 'Check the status of ZeroNetwork server!',
+		description: 'Check the status of our servers!',
 		url: 'https://zeronetwork.vercel.app/',
 		images: [
 			{
