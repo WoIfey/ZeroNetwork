@@ -26,7 +26,7 @@ export default function Footer() {
 	}
 
 	return (
-		<footer className="relative mt-32 sm:mt-40 bg-gray-200 dark:bg-gray-800 transition-colors duration-200">
+		<footer className="relative mt-16 bg-gray-200 dark:bg-gray-800 transition-colors duration-200">
 			<div className="mx-auto max-w-7xl px-6 pb-8 lg:px-8">
 				<div className="pt-8 sm:mt-20 lg:mt-24 flex justify-between items-center">
 					<p className="text-xs leading-5 text-gray-500 dark:text-gray-400">

@@ -18,7 +18,7 @@ import { toast } from 'sonner'
 
 export function Header({ alert, alertVisible }: HeaderProps) {
 	return (
-		<header className="px-6 lg:px-8 pt-28">
+		<header className="px-6 lg:px-8 pt-14 sm:pt-28">
 			<div className="mx-auto max-w-3xl text-center">
 				{alertVisible && (
 					<Alert className="mb-4 bg-transparent border-none">
@@ -52,7 +52,7 @@ export function ServerStatus({
 	}, [])
 
 	const ServerCard = ({ server }: { server: ServerInfo }) => (
-		<Card className="bg-white dark:bg-gray-800 sm:rounded-lg rounded-none">
+		<Card className="sm:bg-white sm:dark:bg-gray-800 bg-transparent border-none sm:shadow-sm shadow-none sm:rounded-lg rounded-none">
 			<CardHeader className="p-6 pb-0">
 				<CardTitle className="flex flex-col sm:flex-row items-start gap-3 sm:gap-0 sm:items-center justify-between">
 					<div className="flex items-center justify-between gap-2 sm:w-auto w-full">
@@ -138,7 +138,7 @@ export function ServerStatus({
 	)
 
 	return (
-		<div className="mx-auto max-w-3xl mt-10 sm:mt-16 space-y-8">
+		<div className="mx-auto max-w-3xl mt-4 sm:mt-16 space-y-0 sm:space-y-8">
 			<ServerCard server={server1} />
 			{server2Visible && <ServerCard server={server2} />}
 		</div>

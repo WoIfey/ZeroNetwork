@@ -27,7 +27,7 @@ const facts = [
 
 export default function Description() {
 	return (
-		<div className="mx-auto max-w-7xl pt-16 px-6 lg:px-8 text-black dark:text-white">
+		<div className="mx-auto max-w-7xl pt-6 sm:pt-16 px-6 lg:px-8 text-black dark:text-white">
 			<div className="mx-auto max-w-2xl lg:mx-0">
 				<h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
 					What are we doing?!

@@ -15,7 +15,7 @@ interface TimelineItem {
 
 export default function Timeline({ timeline }: { timeline: TimelineItem[] }) {
 	return (
-		<section className="px-8 pt-16 pb-10 bg-gray-50 dark:bg-gray-900">
+		<section className="px-8 pt-12 pb-6 sm:pt-16 sm:pb-10 bg-gray-50 dark:bg-gray-900">
 			<div className="max-w-3xl mx-auto">
 				<ol className="relative border-l border-gray-200 dark:border-gray-700">
 					{timeline.map((item, index) => (

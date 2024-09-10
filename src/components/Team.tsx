@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function Team({ teams }: any) {
 	return (
-		<div className="mx-auto mt-28 max-w-7xl px-6 lg:px-8 text-black dark:text-white">
+		<div className="mx-auto pt-16 sm:pt-28 max-w-7xl px-6 lg:px-8 text-black dark:text-white">
 			<div className="mx-auto max-w-2xl lg:mx-0">
 				<h2 className="text-3xl font-bold sm:text-4xl">The Team</h2>
 			</div>

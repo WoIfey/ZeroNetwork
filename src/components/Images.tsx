@@ -64,7 +64,7 @@ export default function Images({
 
 	return (
 		<div
-			className="relative w-full overflow-hidden my-8 mt-16 sm:mt-24"
+			className="relative w-full overflow-hidden my-8 mt-8 sm:mt-24"
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
 		>
