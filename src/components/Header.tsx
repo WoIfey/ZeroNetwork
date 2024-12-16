@@ -3,7 +3,7 @@
 import { useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { AlertCircle, Copy } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
 	Tooltip,

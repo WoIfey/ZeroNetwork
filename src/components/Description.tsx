@@ -1,5 +1,4 @@
 import { CheckCircle2, Clock, Wifi } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 
 const facts = [
@@ -21,7 +20,7 @@ const facts = [
 	{
 		name: 'Great community',
 		description: 'No cap!',
-		image: <Image src="/discord.svg" fill alt="Discord" />,
+		image: <img src="https://wolfey.s-ul.eu/AtvSznJW" alt="Discord" />,
 	},
 ]
 

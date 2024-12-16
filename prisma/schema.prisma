@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,6 +5,18 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Servers {
+  id        Int        @id @default(autoincrement())
+  ips       String[]
+  alert     String
+  visible   Boolean[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  timeline  Timeline[]
+  teams     Teams[]
+  images    Images[]
 }
 
 model Timeline {
@@ -24,17 +30,8 @@ model Timeline {
   status      Boolean
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
-}
-
-model Servers {
-  id              Int      @id @default(autoincrement())
-  server1         String
-  server2         String
-  alert           String
-  alert_visible   Boolean
-  server2_visible Boolean
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now()) @updatedAt
+  Servers     Servers? @relation(fields: [serversId], references: [id])
+  serversId   Int?
 }
 
 model Teams {
@@ -46,6 +43,8 @@ model Teams {
   location  String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  Servers   Servers? @relation(fields: [serversId], references: [id])
+  serversId Int?
 }
 
 model Images {
@@ -54,4 +53,6 @@ model Images {
   alt       String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  Servers   Servers? @relation(fields: [serversId], references: [id])
+  serversId Int?
 }
