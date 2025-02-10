@@ -1,84 +1,64 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import Image from 'next/image'
-import { motion, useAnimation } from 'motion/react'
+import { motion, useAnimationControls } from 'motion/react'
 
-export default function Images({
-	images,
-}: {
-	images: { image: string; alt: string }[]
-}) {
-	const [duplicatedImages, setDuplicatedImages] = useState(images)
-	const carouselRef = useRef<HTMLDivElement>(null)
+export default function Images({ images }: ImageProps) {
 	const [width, setWidth] = useState(0)
-	const controls = useAnimation()
+	const carousel = useRef<HTMLDivElement>(null)
+	const controls = useAnimationControls()
+
+	const DURATION_PER_IMAGE = 5.5
 
 	useEffect(() => {
-		setDuplicatedImages([...images, ...images])
-	}, [images])
-
-	useEffect(() => {
-		const carousel = carouselRef.current
-		if (!carousel) return
-
-		const updateWidth = () => {
-			setWidth(carousel.scrollWidth - carousel.offsetWidth)
+		if (carousel.current) {
+			setWidth(carousel.current.scrollWidth / 2)
 		}
-
-		updateWidth()
-		window.addEventListener('resize', updateWidth)
-
-		return () => {
-			window.removeEventListener('resize', updateWidth)
-		}
-	}, [duplicatedImages])
+	}, [carousel])
 
 	useEffect(() => {
-		controls.start({
-			x: -width,
-			transition: {
-				repeat: Infinity,
-				repeatType: 'loop',
-				duration: 70,
-				ease: 'linear',
-			},
-		})
-	}, [controls, width])
-
-	const handleMouseEnter = () => {
-		controls.stop()
-	}
-
-	const handleMouseLeave = () => {
-		controls.start({
-			x: -width,
-			transition: {
-				repeat: Infinity,
-				repeatType: 'loop',
-				duration: 70,
-				ease: 'linear',
-			},
-		})
-	}
+		if (width > 0) {
+			controls.start({
+				x: -width,
+				transition: {
+					duration: images.length * DURATION_PER_IMAGE,
+					ease: 'linear',
+					repeat: Infinity,
+					repeatDelay: 0,
+					repeatType: 'loop',
+				},
+			})
+		}
+	}, [controls, width, images.length])
 
 	return (
-		<div
-			className="relative w-full overflow-hidden my-8 mt-8 sm:mt-24"
-			onMouseEnter={handleMouseEnter}
-			onMouseLeave={handleMouseLeave}
-		>
-			<motion.div ref={carouselRef} className="flex space-x-4" animate={controls}>
-				{duplicatedImages.map((image, index) => (
-					<motion.div key={index} className="flex-shrink-0">
+		<div className="relative w-full overflow-hidden">
+			<motion.div
+				ref={carousel}
+				className="flex gap-4"
+				animate={controls}
+				initial={{ x: 0 }}
+				style={{
+					width: 'fit-content',
+				}}
+			>
+				{[...images, ...images, ...images].map((item, index) => (
+					<div
+						key={`${item.image}-${index}`}
+						className="group min-w-[300px] min-h-[200px] relative rounded-lg overflow-hidden"
+					>
 						<Image
-							src={image.image}
-							alt={image.alt}
-							width={640}
-							height={360}
-							className="rounded-lg shadow-lg w-fit h-52 sm:h-96"
+							src={item.image}
+							alt={item.alt}
+							fill
+							className="object-cover"
+							priority
 						/>
-					</motion.div>
+						<div className="absolute bottom-0 left-0 w-full p-2 bg-black/50 text-white transform translate-y-full transition-transform duration-200 group-hover:translate-y-0">
+							{item.alt}
+						</div>
+					</div>
 				))}
 			</motion.div>
 		</div>

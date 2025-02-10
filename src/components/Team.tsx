@@ -1,37 +1,47 @@
-import Image from 'next/image'
-import Link from 'next/link'
+'use client'
 
-export default function Team({ teams }: any) {
+import { motion } from 'motion/react'
+import Image from 'next/image'
+
+export default function Team({ teams }: TeamProps) {
 	return (
-		<div className="mx-auto pt-16 sm:pt-28 max-w-7xl px-6 lg:px-8 text-black dark:text-white">
+		<div className="mx-auto max-w-7xl px-6 lg:px-8">
 			<div className="mx-auto max-w-2xl lg:mx-0">
-				<h2 className="text-3xl font-bold sm:text-4xl">The Team</h2>
+				<h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Team</h2>
 			</div>
-			<ul
-				role="list"
-				className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-14 min-[440px]:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3 xl:grid-cols-4"
-			>
-				{teams.map((person: any) => (
-					<li key={person.name}>
-						<Link href={person.url} target="_blank">
-							<Image
-								height={320}
-								width={320}
-								className="aspect-[14/13] w-full rounded-2xl object-cover bg-gray-300 hover:bg-gray-400 dark:bg-gray-800 hover:outline hover:outline-gray-600"
-								src={person.image}
-								alt={person.name}
-							/>
-						</Link>
-						<h3 className="mt-6 text-lg font-semibold leading-8 tracking-wide uppercase">
-							{person.name}
-						</h3>
-						<p className="text-base leading-7 text-gray-500 dark:text-gray-300">
+			<ul className="mx-auto mt-10 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none">
+				{teams.map((person, index) => (
+					<motion.li
+						key={person.name}
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true }}
+						transition={{ duration: 0.5, delay: index * 0.1 }}
+					>
+						<a href={person.url} target="_blank" rel="noopener noreferrer">
+							<motion.div
+								className="relative mx-auto size-40 overflow-hidden rounded-lg"
+								whileHover={{ scale: 1.05 }}
+							>
+								<Image
+									src={person.image}
+									alt={person.name}
+									width={256}
+									height={256}
+									className="object-cover size-40"
+								/>
+							</motion.div>
+							<h3 className="mt-6 text-base font-semibold leading-7 hover:text-blue-600">
+								{person.name}
+							</h3>
+						</a>
+						<p className="text-sm leading-6 text-gray-600 dark:text-gray-400">
 							{person.role}
 						</p>
-						<p className="text-sm leading-6 text-gray-700 dark:text-gray-500">
+						<p className="text-sm leading-6 text-gray-500 dark:text-gray-500">
 							{person.location}
 						</p>
-					</li>
+					</motion.li>
 				))}
 			</ul>
 		</div>

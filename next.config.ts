@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'wolfey.s-ul.eu',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      }
     ],
   },
 }
