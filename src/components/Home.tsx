@@ -2,8 +2,6 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { unstable_noStore as noStore } from 'next/cache'
-import { Skeleton } from './ui/skeleton'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import Login from './Login'
 import { Header, ServerStatus } from './Header'
 import Images from './Images'
