@@ -127,7 +127,6 @@ const ServerCard = ({
 
 export function Header({ alert, alertVisible }: HeaderProps) {
 	return (
-		<>
 			<header className="relative px-6 lg:px-8 pt-6 pb-12">
 				<div className="relative">
 					{alertVisible && (
@@ -171,7 +170,6 @@ export function Header({ alert, alertVisible }: HeaderProps) {
 					</div>
 				</div>
 			</header>
-		</>
 	)
 }
 
