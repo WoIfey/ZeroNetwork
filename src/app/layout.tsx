@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Syne } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
+import Dev from '@/components/Dev'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ variable: '--font-inter', subsets: ['latin'] })
+const syne = Syne({ variable: '--font-syne', subsets: ['latin'] })
 
 export const metadata: Metadata = {
 	title: 'Im Her Zero Network',
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
 		url: 'https://zeronetwork.vercel.app/',
 		images: [
 			{
-				url: 'https://wolfey.s-ul.eu/tJkEeK8Y',
+				url: 'https://wolfey.s-ul.eu/BEjr7quX',
 				width: 1280,
 				height: 720,
 				alt: 'Thumbnail',
@@ -31,9 +33,19 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode
 }>) {
+	if (process.env.DEV === 'true') {
+		return (
+			<html lang="en" suppressHydrationWarning>
+				<body className={inter.variable}>
+					<Dev />
+				</body>
+			</html>
+		)
+	}
+
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={inter.className}>
+			<body className={`${inter.className} ${syne.variable}`}>
 				<ThemeProvider
 					defaultTheme="system"
 					attribute="class"

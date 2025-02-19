@@ -25,7 +25,7 @@ export default function WithersWrath() {
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
 			<div className="relative">
 				<div className="absolute -inset-4 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl blur-2xl opacity-20 -z-10" />
-				<div className="grid md:grid-cols-2 gap-8 items-center bg-white/5 p-8 rounded-2xl">
+				<div className="grid md:grid-cols-2 gap-8 items-center dark:bg-white/5 bg-black/50 p-8 rounded-2xl">
 					<div
 						className="relative w-full mx-auto"
 						style={{ maxHeight: '250px', aspectRatio: '16/9' }}

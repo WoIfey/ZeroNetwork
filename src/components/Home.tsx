@@ -70,12 +70,13 @@ export default function Home({ data }: HomeProps) {
 	return (
 		<div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
 			<main className="relative isolate">
-				<Login />
+				<div className="absolute top-0 z-[-2] h-full w-full dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
 				<div className="relative max-w-7xl mx-auto px-6 lg:px-8">
 					<Header
 						alert={serverConfig?.alert}
 						alertVisible={serverConfig?.visible[0] ?? false}
 					/>
+
 					<ServerStatus
 						server1={server1}
 						server2={server2}

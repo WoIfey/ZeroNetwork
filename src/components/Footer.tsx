@@ -18,7 +18,7 @@ export default function Footer() {
 							<img
 								src="https://wolfey.s-ul.eu/AtvSznJW"
 								alt="Discord"
-								className="h-4 w-4 opacity-60 hover:opacity-100 transition-opacity"
+								className="h-4 w-4"
 							/>
 						</Link>
 					</Button>

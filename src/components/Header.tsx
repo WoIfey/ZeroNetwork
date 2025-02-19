@@ -127,39 +127,51 @@ const ServerCard = ({
 
 export function Header({ alert, alertVisible }: HeaderProps) {
 	return (
-		<header className="relative px-6 lg:px-8 pt-6 pb-12">
-			<div className="relative">
-				<div className="grid md:grid-cols-2 gap-8 items-center">
-					<div className="text-left">
-						{alertVisible && (
-							<Alert className="mb-4 bg-transparent border-none p-0 py-4">
-								<AlertDescription className="flex flex-col sm:flex-row items-center gap-2">
-									<AlertCircle className="size-5 sm:size-4" />
-									{alert}
-								</AlertDescription>
-							</Alert>
-						)}
-						<h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 bg-clip-text text-transparent sm:text-5xl md:text-6xl">
-							The Im Her Zero Network
-						</h1>
-						<p className="mt-4 text-lg text-muted-foreground">
-							Join our incredible Minecraft community and experience unique gameplay
-							with friends.
-						</p>
-					</div>
-					<div className="relative">
-						<div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur-2xl opacity-20 -z-10" />
-						<Image
-							width={1280}
-							height={720}
-							src="https://wolfey.s-ul.eu/MRAi60sD"
-							alt="Wolfey and Hero"
-							priority
-						/>
+		<>
+			<header className="relative px-6 lg:px-8 pt-6 pb-12">
+				<div className="relative">
+					{alertVisible && (
+						<Alert className="mb-4 bg-transparent border-none p-0 py-4">
+							<AlertDescription className="flex flex-col sm:flex-row items-center gap-2">
+								<AlertCircle className="size-5 sm:size-4" />
+								{alert}
+							</AlertDescription>
+						</Alert>
+					)}
+					<div className="relative min-h-[300px] flex items-center justify-center">
+						<div className="absolute w-full h-full flex justify-between items-center pointer-events-none">
+							<div className="relative size-96 animate-float-slow">
+								<Image
+									fill
+									src="https://wolfey.s-ul.eu/L2c6zc9c"
+									alt="Wolfey"
+									className="object-contain"
+									priority
+								/>
+							</div>
+							<div className="relative size-96 animate-float-delayed">
+								<Image
+									fill
+									src="https://wolfey.s-ul.eu/V8AxRMcD"
+									alt="ImHer0"
+									className="object-contain"
+									priority
+								/>
+							</div>
+						</div>
+						<div className="text-center max-w-3xl">
+							<h1 className="font-syne text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 bg-clip-text text-transparent sm:text-5xl md:text-6xl">
+								The Im Her Zero Network
+							</h1>
+							<p className="mt-4 text-lg text-muted-foreground">
+								Join our incredible Minecraft community and experience unique gameplay
+								with friends.
+							</p>
+						</div>
 					</div>
 				</div>
-			</div>
-		</header>
+			</header>
+		</>
 	)
 }
 
