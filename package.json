@@ -4,21 +4,21 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "npx prisma generate && npx prisma migrate dev && next build",
+		"build": "npx prisma generate && npx prisma migrate deploy && next build",
 		"start": "next start",
 		"lint": "next lint",
-		"docker": "docker-compose up -d",
-		"prisma": "npx prisma generate && npx prisma migrate dev",
-		"studio": "npx prisma studio",
 		"db:start": "docker-compose up -d",
 		"db:stop": "docker-compose down",
-		"db:reset": "docker-compose down -v && docker-compose up -d && npx prisma migrate dev && npx prisma db seed",
-		"db:seed": "npx prisma db seed"
+		"db:seed": "npx prisma db seed",
+		"prisma": "npx prisma generate && npx prisma migrate dev",
+		"studio": "npx prisma studio",
+		"db:reset": "docker-compose down -v && docker-compose up -d && npx prisma migrate dev && npx prisma db seed"
 	},
 	"prisma": {
 		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
 	},
 	"dependencies": {
+		"@radix-ui/react-dialog": "^1.1.6",
 		"@radix-ui/react-slot": "^1.1.2",
 		"@radix-ui/react-tooltip": "^1.1.8",
 		"better-auth": "^1.1.18",

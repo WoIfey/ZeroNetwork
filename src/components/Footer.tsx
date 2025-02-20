@@ -4,6 +4,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import Github from './ui/github'
 
 export default function Footer() {
 	const { setTheme, resolvedTheme } = useTheme()
@@ -20,6 +21,11 @@ export default function Footer() {
 								alt="Discord"
 								className="h-4 w-4"
 							/>
+						</Link>
+					</Button>
+					<Button asChild size="sm" className="h-8 w-8 p-0" variant="ghost">
+						<Link href="https://github.com/WoIfey/ZeroNetwork" target="_blank">
+							<Github className="dark:invert-0 invert" />
 						</Link>
 					</Button>
 					<Button

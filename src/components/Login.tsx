@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
 import Discord from './ui/discord'
 
-export default function Login() {
+export default function Login({ whitelist }: { whitelist: boolean }) {
 	const { data: session, isPending } = authClient.useSession()
 
 	const signIn = async () => {
@@ -25,7 +25,7 @@ export default function Login() {
 	return (
 		<div className="flex justify-end p-4 gap-4">
 			{!session && (
-				<Button onClick={signIn} className="gap-2">
+				<Button disabled={whitelist} onClick={signIn} className="gap-2">
 					<Discord className="size-5" />
 					Login with Discord
 				</Button>

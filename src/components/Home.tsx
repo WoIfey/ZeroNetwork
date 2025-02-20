@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, useMemo } from 'react'
-import { unstable_noStore as noStore } from 'next/cache'
+import { updateServerIps } from '@/actions/data'
 import Login from './Login'
 import { Header, ServerStatus } from './Header'
 import Images from './Images'
@@ -10,18 +10,12 @@ import Description from './Description'
 import Team from './Team'
 import Footer from './Footer'
 import WithersWrath from './WithersWrath'
-
-const default_info: ServerInfo = {
-	online: false,
-	players: { online: 0, max: 0 },
-	hostname: '',
-	icon: '',
-	version: '',
-	motd: { clean: '' },
-}
+import { toast } from 'sonner'
+import { authClient } from '@/lib/auth-client'
 
 const useServerStatus = (serverUrl?: string) => {
-	const [serverInfo, setServerInfo] = useState<ServerInfo>(default_info)
+	const { data: session, isPending } = authClient.useSession()
+	const [serverInfo, setServerInfo] = useState<ServerInfo>({} as ServerInfo)
 	const [error, setError] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 
@@ -54,8 +48,8 @@ const useServerStatus = (serverUrl?: string) => {
 }
 
 export default function Home({ data }: HomeProps) {
-	noStore()
-	const serverConfig = useMemo(() => data[0], [data])
+	const { data: session } = authClient.useSession()
+	const [serverConfig, setServerConfig] = useState(() => data[0])
 
 	const { serverInfo: server1, isLoading: isLoading1 } = useServerStatus(
 		serverConfig?.ips[0]
@@ -67,11 +61,24 @@ export default function Home({ data }: HomeProps) {
 
 	const isLoading = isLoading1 || isLoading2
 
+	const handleIpChange = useCallback(
+		async (index: number, newIp: string) => {
+			try {
+				const updated = await updateServerIps(serverConfig.id, index, newIp)
+				setServerConfig(prev => ({ ...prev, ips: updated.ips }))
+			} catch (error) {
+				console.error('Failed to update IP:', error)
+				toast.error('Failed to update server IP')
+			}
+		},
+		[serverConfig?.id]
+	)
+
 	return (
-		<div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+		<div className="min-h-screen">
 			<main className="relative isolate">
-				<div className="absolute top-0 z-[-2] h-full w-full dark:bg-neutral-950 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-				<Login />
+				<div className="absolute top-0 z-[-2] h-full w-full bg-neutral-100 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] dark:bg-neutral-900 dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+				<Login whitelist={serverConfig?.visible[3] ?? true} />
 				<div className="relative max-w-7xl mx-auto px-6 lg:px-8">
 					<Header
 						alert={serverConfig?.alert}
@@ -82,10 +89,12 @@ export default function Home({ data }: HomeProps) {
 						server2={server2}
 						server2Visible={serverConfig?.visible[2] ?? false}
 						isLoading={isLoading}
+						onIpChange={handleIpChange}
+						session={session}
 					/>
 				</div>
 
-				<div className="space-y-16 py-8">
+				<div className="space-y-16 pt-12">
 					<Images images={serverConfig?.images ?? []} />
 					<WithersWrath />
 					<Timeline timeline={serverConfig?.timeline ?? []} />

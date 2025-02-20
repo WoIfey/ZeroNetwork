@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
+import { ArrowRight } from 'lucide-react'
 
 const images = [
 	'https://wolfey.s-ul.eu/kXWiCEqX',
@@ -24,33 +25,34 @@ export default function WithersWrath() {
 	return (
 		<div className="mx-auto max-w-7xl px-6 lg:px-8">
 			<div className="relative">
-				<div className="absolute -inset-4 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl blur-2xl opacity-20 -z-10" />
-				<div className="grid md:grid-cols-2 gap-8 items-center dark:bg-white/5 bg-black/50 p-8 rounded-2xl">
+				<div className="absolute -inset-4 bg-gradient-to-r from-purple-950 to-purple-800 rounded-xl blur-2xl opacity-20 -z-10" />
+				<div className="grid md:grid-cols-2 gap-6 items-center dark:bg-white/5 bg-black/5 p-6 rounded-xl">
 					<div
 						className="relative w-full mx-auto"
-						style={{ maxHeight: '250px', aspectRatio: '16/9' }}
+						style={{ maxHeight: '200px', aspectRatio: '16/9' }}
 					>
 						<Image
 							src={images[currentImageIndex]}
-							alt="Withers Wrath Screenshot"
+							alt="Withers Wrath Gameplay"
 							fill
-							className="object-cover rounded-xl"
+							unoptimized
+							className="object-cover rounded-lg"
 						/>
 					</div>
 					<div className="text-center md:text-left">
-						<div className="flex items-center gap-4">
+						<div className="flex items-center justify-center md:justify-start gap-3">
 							<Image
 								src="https://wolfey.s-ul.eu/dvkIpKpa"
-								alt="Withers Wrath Screenshot"
+								alt="Withers Wrath Logo"
 								width={96}
 								height={96}
-								className="size-12 object-cover rounded-xl"
+								className="size-10 object-cover rounded-lg"
 							/>
-							<h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-200 bg-clip-text text-transparent">
+							<h2 className="font-syne text-2xl font-bold bg-gradient-to-r from-purple-900 to-purple-700 dark:from-purple-400 dark:to-purple-200 bg-clip-text text-transparent">
 								Withers Wrath
 							</h2>
 						</div>
-						<p className="mt-4 text-lg text-purple-100">
+						<p className="mt-3 text-base text-gray-800 dark:text-purple-100">
 							Experience the ultimate challenge in our custom datapack! Push your
 							skills to the limit with enhanced wither battles.
 						</p>
@@ -58,10 +60,10 @@ export default function WithersWrath() {
 							href="https://modrinth.com/datapack/witherswrath/"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="mt-6 inline-block"
+							className="mt-4 inline-block"
 						>
-							<Button className="px-6 py-3 bg-purple-500 hover:bg-purple-400 text-white font-bold">
-								Download Now
+							<Button className="px-5 py-2 bg-purple-800 hover:bg-purple-700 text-white font-medium">
+								Learn more <ArrowRight />
 							</Button>
 						</a>
 					</div>

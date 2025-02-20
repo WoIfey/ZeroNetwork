@@ -31,61 +31,59 @@ const facts = [
 
 export default function Description() {
 	return (
-		<div className="mx-auto max-w-7xl pt-6 sm:pt-16 px-6 lg:px-8">
-			<motion.div
-				className="mx-auto max-w-2xl lg:mx-0"
-				initial={{ opacity: 0, y: 20 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				viewport={{ once: true }}
-			>
-				<h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-					What are we doing?!
-				</h2>
-				<p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
-					We host fun minecraft servers for our{' '}
-					<Link
-						href="https://discord.gg/a6JrZMa"
-						target="_blank"
-						className="text-blue-500 hover:underline"
-					>
-						Discord Server
-					</Link>
-					! Yippee! <br />
-					Sometimes we host modpacks and sometimes survival servers!
-				</p>
-			</motion.div>
-			<dl className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-8 text-base leading-7 text-gray-600 dark:text-gray-300 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:gap-x-16">
-				{facts.map((fact, index) => (
-					<motion.div
-						key={fact.name}
-						className="relative pl-9"
-						initial={{ opacity: 0, x: -20 }}
-						whileInView={{ opacity: 1, x: 0 }}
-						viewport={{ once: true }}
-						transition={{ duration: 0.5, delay: index * 0.1 }}
-					>
-						<dt className="flex items-center gap-2 font-semibold text-black dark:text-white">
-							<div className="absolute left-1 top-1 size-5">
-								<fact.icon className="size-5" />
+		<div className="py-12 sm:py-16">
+			<div className="mx-auto max-w-7xl px-6 lg:px-8">
+				<motion.div
+					className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left"
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true }}
+				>
+					<h2 className="font-syne text-4xl font-bold tracking-tight sm:text-5xl">
+						What are we doing?!
+					</h2>
+					<div className="mt-6 text-xl text-gray-600 dark:text-gray-300">
+						<p>We run Minecraft servers with lots of fun features for everyone.</p>
+						<p className="mt-4">
+							Whether you like modded or vanilla Minecraft, we've got something for
+							you. Suggest modpacks or ideas in our Discord!
+						</p>
+					</div>
+				</motion.div>
+
+				<div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2 xl:grid-cols-4">
+					{facts.map((fact, index) => (
+						<motion.div
+							key={fact.name}
+							className="relative rounded-2xl border border-gray-200 dark:border-gray-800 p-8 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 group"
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true }}
+							transition={{ duration: 0.5, delay: index * 0.1 }}
+						>
+							<div className="mb-4">
+								<fact.icon className="size-8 text-blue-500 group-hover:scale-110 transition-transform duration-300" />
 							</div>
-							{fact.name}
-						</dt>
-						<dd className="inline">
-							{fact.link ? (
-								<Link
-									href={fact.link}
-									target="_blank"
-									className="text-blue-500 hover:underline"
-								>
-									{fact.description}
-								</Link>
-							) : (
-								fact.description
-							)}
-						</dd>
-					</motion.div>
-				))}
-			</dl>
+							<dt className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+								{fact.name}
+							</dt>
+							<dd className="text-gray-600 dark:text-gray-300">
+								{fact.link ? (
+									<Link
+										href={fact.link}
+										target="_blank"
+										className="text-blue-500 hover:text-blue-600 transition-colors"
+									>
+										{fact.description}
+									</Link>
+								) : (
+									fact.description
+								)}
+							</dd>
+						</motion.div>
+					))}
+				</div>
+			</div>
 		</div>
 	)
 }
