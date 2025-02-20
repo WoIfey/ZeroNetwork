@@ -1,15 +1,73 @@
+type ServerPlayers = {
+    online: number
+    max: number
+}
+
+type ServerMotd = {
+    raw: string[]
+    clean: string[]
+    html: string[]
+}
+
 type ServerInfo = {
     hostname: string
     version: string
     icon?: string
     online: boolean
-    players?: {
-        online: number
-        max: number
-    }
-    motd?: {
-        clean: string
-    }
+    players?: ServerPlayers
+    motd?: ServerMotd
+}
+
+type BaseItem = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+}
+
+type ImageItem = BaseItem & {
+    image: string
+    alt: string
+}
+
+type TeamMember = BaseItem & {
+    name: string
+    role: string
+    url: string
+    image: string
+    location: string
+}
+
+type TimelineItem = BaseItem & {
+    title: string
+    subtitle: string
+    description: string
+    year: number
+    images: string[]
+    url: string[]
+    button: boolean[]
+}
+
+type VisibilityConfig = {
+    alert: boolean
+    server1: boolean
+    server2: boolean
+    whitelist: boolean
+}
+
+type ServerConfig = {
+    server1: string
+    server2: string
+    alert: string
+    visible: boolean[] // [alert, server1, server2, whitelist]
+}
+
+type HomeData = BaseItem & {
+    ips: string[]
+    alert: string
+    visible: boolean[]
+    images: ImageItem[]
+    timeline: TimelineItem[]
+    teams: TeamMember[]
 }
 
 type HeaderProps = {
@@ -23,61 +81,8 @@ type ServerStatusProps = {
     server2Visible: boolean
 }
 
-type ServerConfig = {
-    server1: string
-    server2: string
-    alert: string
-    // visible[0] for alert, visible[1] for server1, visible[2] for server2
-    visible: boolean[]
-}
-
 type HomeProps = {
-    data: {
-        id: number
-        ips: string[]
-        alert: string
-        // visible[0] for alert, visible[1] for server1, visible[2] for server2
-        visible: boolean[]
-        images: Array<{
-            id: number
-            image: string
-            alt: string
-            createdAt: Date
-            updatedAt: Date
-        }>
-        timeline: Array<{
-            id: number
-            title: string
-            description: string
-            year: number
-            url: string
-            button: boolean
-            buttonURL: string
-            status: boolean
-            createdAt: Date
-            updatedAt: Date
-        }>
-        teams: Array<{
-            id: number
-            name: string
-            role: string
-            url: string
-            image: string
-            location: string
-            createdAt: Date
-            updatedAt: Date
-        }>
-        createdAt: Date
-        updatedAt: Date
-    }[]
-}
-
-type ImageItem = {
-    id: number
-    image: string
-    alt: string
-    createdAt: Date
-    updatedAt: Date
+    data: HomeData[]
 }
 
 type ImageProps = {
@@ -85,31 +90,11 @@ type ImageProps = {
 }
 
 type TeamProps = {
-    teams: Array<{
-        id: number
-        name: string
-        role: string
-        url: string
-        image: string
-        location: string
-        createdAt: Date
-        updatedAt: Date
-    }>
+    teams: TeamMember[]
 }
 
 type TimelineProps = {
-    timeline: Array<{
-        id: number
-        title: string
-        description: string
-        year: number
-        url: string
-        button: boolean
-        buttonURL: string
-        status: boolean
-        createdAt: Date
-        updatedAt: Date
-    }>
+    timeline: TimelineItem[]
 }
 
 type ServerCardProps = {

@@ -9,6 +9,20 @@ export default {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				inter: ['var(--font-inter)'],
+				syne: ['var(--font-syne)'],
+			},
+			animation: {
+				'float-slow': 'float 6s ease-in-out infinite',
+				'float-delayed': 'float 6s ease-in-out 3s infinite',
+			},
+			keyframes: {
+				float: {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-20px)' },
+				},
+			},
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
