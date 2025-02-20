@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { updateServerIps } from '@/actions/data'
 import Login from './Login'
 import { Header, ServerStatus } from './Header'
@@ -11,10 +11,8 @@ import Team from './Team'
 import Footer from './Footer'
 import WithersWrath from './WithersWrath'
 import { toast } from 'sonner'
-import { authClient } from '@/lib/auth-client'
 
 const useServerStatus = (serverUrl?: string) => {
-	const { data: session, isPending } = authClient.useSession()
 	const [serverInfo, setServerInfo] = useState<ServerInfo>({} as ServerInfo)
 	const [error, setError] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
@@ -48,7 +46,6 @@ const useServerStatus = (serverUrl?: string) => {
 }
 
 export default function Home({ data }: HomeProps) {
-	const { data: session } = authClient.useSession()
 	const [serverConfig, setServerConfig] = useState(() => data[0])
 
 	const { serverInfo: server1, isLoading: isLoading1 } = useServerStatus(
@@ -90,7 +87,6 @@ export default function Home({ data }: HomeProps) {
 						server2Visible={serverConfig?.visible[2] ?? false}
 						isLoading={isLoading}
 						onIpChange={handleIpChange}
-						session={session}
 					/>
 				</div>
 

@@ -45,8 +45,8 @@ export default function Description() {
 					<div className="mt-6 text-xl text-gray-600 dark:text-gray-300">
 						<p>We run Minecraft servers with lots of fun features for everyone.</p>
 						<p className="mt-4">
-							Whether you like modded or vanilla Minecraft, we've got something for
-							you. Suggest modpacks or ideas in our Discord!
+							Whether you like modded or vanilla Minecraft, we&apos;ve got something
+							for you. Suggest modpacks or ideas in our Discord!
 						</p>
 					</div>
 				</motion.div>

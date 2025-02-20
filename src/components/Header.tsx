@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import * as Editable from '@/components/ui/editable'
+import { authClient } from '@/lib/auth-client'
 
 const ServerCard = ({
 	server,
@@ -219,12 +220,12 @@ export function ServerStatus({
 	server2Visible,
 	isLoading,
 	onIpChange,
-	session,
 }: ServerStatusProps & {
 	isLoading?: boolean
 	onIpChange?: (index: number, newIp: string) => void
-	session?: any
 }) {
+	const { data: session } = authClient.useSession()
+
 	const handleCopyIp = useCallback(async (text: string) => {
 		try {
 			await navigator.clipboard.writeText(text)
