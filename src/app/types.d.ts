@@ -1,118 +1,62 @@
+type ServerPlayers = {
+    online: number
+    max: number
+}
+
+type ServerMotd = {
+    raw: string[]
+    clean: string[]
+    html: string[]
+}
+
 type ServerInfo = {
     hostname: string
     version: string
     icon?: string
     online: boolean
-    players?: {
-        online: number
-        max: number
-    }
-    motd?: {
-        clean: string
-    }
+    players?: ServerPlayers
+    motd?: ServerMotd
 }
 
-type HeaderProps = {
-    alert?: string
-    alertVisible: boolean
-}
-
-type ServerStatusProps = {
-    server1: ServerInfo
-    server2: ServerInfo
-    server2Visible: boolean
-}
-
-type ServerConfig = {
-    server1: string
-    server2: string
-    alert: string
-    // visible[0] for alert, visible[1] for server1, visible[2] for server2
-    visible: boolean[]
-}
-
-type HomeProps = {
-    data: {
-        id: number
-        ips: string[]
-        alert: string
-        // visible[0] for alert, visible[1] for server1, visible[2] for server2
-        visible: boolean[]
-        images: Array<{
-            id: number
-            image: string
-            alt: string
-            createdAt: Date
-            updatedAt: Date
-        }>
-        timeline: Array<{
-            id: number
-            title: string
-            description: string
-            year: number
-            url: string
-            button: boolean
-            buttonURL: string
-            status: boolean
-            createdAt: Date
-            updatedAt: Date
-        }>
-        teams: Array<{
-            id: number
-            name: string
-            role: string
-            url: string
-            image: string
-            location: string
-            createdAt: Date
-            updatedAt: Date
-        }>
-        createdAt: Date
-        updatedAt: Date
-    }[]
-}
-
-type ImageItem = {
+type BaseItem = {
     id: number
-    image: string
-    alt: string
     createdAt: Date
     updatedAt: Date
 }
 
-type ImageProps = {
+type ImageItem = BaseItem & {
+    image: string
+    alt: string
+}
+
+type TeamMember = BaseItem & {
+    name: string
+    role: string
+    url: string
+    image: string
+    location: string
+}
+
+type TimelineItem = BaseItem & {
+    title: string
+    subtitle: string
+    description: string
+    year: number
+    images: string[]
+    alt: string[]
+    url: string[]
+    button: boolean[]
+}
+
+type ServerConfig = BaseItem & {
+    ips: string[]
+    alert: string
+    visible: boolean[] // [alert, server1, server2, whitelist]
+    timeline: TimelineItem[]
+    teams: TeamMember[]
     images: ImageItem[]
 }
 
-type TeamProps = {
-    teams: Array<{
-        id: number
-        name: string
-        role: string
-        url: string
-        image: string
-        location: string
-        createdAt: Date
-        updatedAt: Date
-    }>
-}
-
-type TimelineProps = {
-    timeline: Array<{
-        id: number
-        title: string
-        description: string
-        year: number
-        url: string
-        button: boolean
-        buttonURL: string
-        status: boolean
-        createdAt: Date
-        updatedAt: Date
-    }>
-}
-
-type ServerCardProps = {
-    server: ServerInfo
-    handleCopyIp: (hostname: string) => void
+type ComponentProps = {
+    data: ServerConfig
 }

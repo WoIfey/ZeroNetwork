@@ -17,21 +17,26 @@ model Servers {
   timeline  Timeline[]
   teams     Teams[]
   images    Images[]
+
+  @@map("servers")
 }
 
 model Timeline {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
+  subtitle    String
   description String
   year        Int
-  url         String
-  button      Boolean
-  buttonURL   String
-  status      Boolean
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
-  Servers     Servers? @relation(fields: [serversId], references: [id])
+  images      String[]
+  alt         String[]
+  url         String[]
+  button      Boolean[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  Servers     Servers?  @relation(fields: [serversId], references: [id])
   serversId   Int?
+
+  @@map("timeline")
 }
 
 model Teams {
@@ -45,6 +50,8 @@ model Teams {
   updatedAt DateTime @default(now()) @updatedAt
   Servers   Servers? @relation(fields: [serversId], references: [id])
   serversId Int?
+
+  @@map("teams")
 }
 
 model Images {
@@ -55,6 +62,8 @@ model Images {
   updatedAt DateTime @default(now()) @updatedAt
   Servers   Servers? @relation(fields: [serversId], references: [id])
   serversId Int?
+
+  @@map("images")
 }
 
 model User {
