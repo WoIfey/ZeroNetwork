@@ -43,61 +43,20 @@ type TimelineItem = BaseItem & {
     description: string
     year: number
     images: string[]
+    alt: string[]
     url: string[]
     button: boolean[]
 }
 
-type VisibilityConfig = {
-    alert: boolean
-    server1: boolean
-    server2: boolean
-    whitelist: boolean
-}
-
-type ServerConfig = {
-    server1: string
-    server2: string
-    alert: string
-    visible: boolean[] // [alert, server1, server2, whitelist]
-}
-
-type HomeData = BaseItem & {
+type ServerConfig = BaseItem & {
     ips: string[]
     alert: string
-    visible: boolean[]
-    images: ImageItem[]
+    visible: boolean[] // [alert, server1, server2, whitelist]
     timeline: TimelineItem[]
     teams: TeamMember[]
-}
-
-type HeaderProps = {
-    alert?: string
-    alertVisible: boolean
-}
-
-type ServerStatusProps = {
-    server1: ServerInfo
-    server2: ServerInfo
-    server2Visible: boolean
-}
-
-type HomeProps = {
-    data: HomeData[]
-}
-
-type ImageProps = {
     images: ImageItem[]
 }
 
-type TeamProps = {
-    teams: TeamMember[]
-}
-
-type TimelineProps = {
-    timeline: TimelineItem[]
-}
-
-type ServerCardProps = {
-    server: ServerInfo
-    handleCopyIp: (hostname: string) => void
+type ComponentProps = {
+    data: ServerConfig
 }

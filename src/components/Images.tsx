@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { motion, useAnimationControls } from 'motion/react'
 
-export default function Images({ images }: ImageProps) {
+export default function Images({ data }: ComponentProps) {
 	const [width, setWidth] = useState(0)
 	const carousel = useRef<HTMLDivElement>(null)
 	const controls = useAnimationControls()
@@ -22,7 +22,7 @@ export default function Images({ images }: ImageProps) {
 			controls.start({
 				x: -width,
 				transition: {
-					duration: images.length * DURATION_PER_IMAGE,
+					duration: data.images.length * DURATION_PER_IMAGE,
 					ease: 'linear',
 					repeat: Infinity,
 					repeatDelay: 0,
@@ -30,7 +30,7 @@ export default function Images({ images }: ImageProps) {
 				},
 			})
 		}
-	}, [controls, width, images.length])
+	}, [controls, width, data.images.length])
 
 	return (
 		<div className="relative w-full overflow-hidden">
@@ -43,7 +43,7 @@ export default function Images({ images }: ImageProps) {
 					width: 'fit-content',
 				}}
 			>
-				{[...images, ...images, ...images].map((item, index) => (
+				{[...data.images, ...data.images, ...data.images].map((item, index) => (
 					<div
 						key={`${item.image}-${index}`}
 						className="group min-w-[300px] min-h-[200px] relative rounded-lg overflow-hidden"
@@ -55,8 +55,10 @@ export default function Images({ images }: ImageProps) {
 							className="object-cover"
 							priority
 						/>
-						<div className="absolute bottom-0 left-0 w-full p-2 bg-black/50 text-white transform translate-y-full transition-transform duration-200 group-hover:translate-y-0">
-							{item.alt}
+						<div className="absolute inset-0 bg-gradient-to-t from-black/100 via-black/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+							<span className="absolute bottom-0 left-0 w-full p-2 text-white">
+								{item.alt}
+							</span>
 						</div>
 					</div>
 				))}

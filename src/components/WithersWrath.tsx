@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { Button } from './ui/button'
-import { ArrowRight } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 
 const images = [
 	'https://wolfey.s-ul.eu/kXWiCEqX',
@@ -62,9 +61,9 @@ export default function WithersWrath() {
 							rel="noopener noreferrer"
 							className="mt-4 inline-block"
 						>
-							<Button className="px-5 py-2 bg-purple-800 hover:bg-purple-700 text-white font-medium">
-								Learn more <ArrowRight />
-							</Button>
+							<button className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-4 py-2 text-sm font-medium text-purple-600 transition-colors hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50">
+								Learn more <ExternalLink className="size-4" />
+							</button>
 						</a>
 					</div>
 				</div>

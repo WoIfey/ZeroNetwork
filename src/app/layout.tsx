@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
 import Dev from '@/components/Dev'
+import { flag } from '@vercel/flags/next'
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] })
 const syne = Syne({ variable: '--font-syne', subsets: ['latin'] })
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 		url: 'https://zeronetwork.vercel.app/',
 		images: [
 			{
-				url: 'https://wolfey.s-ul.eu/BEjr7quX',
+				url: 'https://wolfey.s-ul.eu/oTDF5P9b',
 				width: 1280,
 				height: 720,
 				alt: 'Thumbnail',
@@ -28,12 +29,23 @@ export const metadata: Metadata = {
 	},
 }
 
-export default function RootLayout({
+const devFlag = flag<boolean>({
+	key: 'dev',
+	defaultValue: false,
+	description: 'Make the site show a maintenance page.',
+	decide() {
+		return false
+	},
+})
+
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode
 }>) {
-	if (process.env.DEV === 'true') {
+	const flag = await devFlag()
+
+	if (flag) {
 		return (
 			<html lang="en" suppressHydrationWarning>
 				<body className={inter.variable}>
@@ -53,7 +65,7 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					{children}
-					<Toaster position="top-center" />
+					<Toaster position="bottom-center" />
 				</ThemeProvider>
 			</body>
 		</html>

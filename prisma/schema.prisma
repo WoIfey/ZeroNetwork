@@ -28,6 +28,7 @@ model Timeline {
   description String
   year        Int
   images      String[]
+  alt         String[]
   url         String[]
   button      Boolean[]
   createdAt   DateTime  @default(now())

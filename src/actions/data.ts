@@ -1,8 +1,8 @@
 "use server"
 import { prisma } from "@/lib/prisma";
 
-export async function fetchData() {
-    return await prisma.servers.findMany({
+export async function fetchData(): Promise<ServerConfig | null> {
+    return await prisma.servers.findFirst({
         include: {
             timeline: {
                 orderBy: {
@@ -11,7 +11,7 @@ export async function fetchData() {
             },
             teams: {
                 orderBy: {
-                    id: 'desc',
+                    id: 'asc',
                 }
             },
             images: {
