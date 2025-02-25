@@ -88,15 +88,17 @@ export default function Timeline({ data }: ComponentProps) {
 																{item.description}
 															</DialogDescription>
 														</div>
-														<div className="hidden md:block shrink-0">
-															<a
-																href={item.url[0]}
-																target="_blank"
-																className="inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
-															>
-																Learn more <ExternalLink className="size-4" />
-															</a>
-														</div>
+														{item.url[0] && (
+															<div className="hidden md:block shrink-0">
+																<a
+																	href={item.url[0]}
+																	target="_blank"
+																	className="inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
+																>
+																	Learn more <ExternalLink className="size-4" />
+																</a>
+															</div>
+														)}
 													</div>
 												</DialogHeader>
 
@@ -175,15 +177,17 @@ export default function Timeline({ data }: ComponentProps) {
 													</Carousel>
 												</div>
 
-												<div className="md:hidden p-4 flex justify-center border-t border-gray-200 dark:border-gray-800">
-													<a
-														href={item.url[0]}
-														target="_blank"
-														className="w-full inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
-													>
-														Learn more <ExternalLink className="size-4" />
-													</a>
-												</div>
+												{item.url[0] && (
+													<div className="md:hidden p-4 flex justify-center border-t border-gray-200 dark:border-gray-800">
+														<a
+															href={item.url[0]}
+															target="_blank"
+															className="w-full inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
+														>
+															Learn more <ExternalLink className="size-4" />
+														</a>
+													</div>
+												)}
 											</DialogContent>
 										</Dialog>
 									)}
