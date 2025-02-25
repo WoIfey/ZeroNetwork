@@ -18,6 +18,7 @@ import {
 	CarouselPrevious,
 } from '@/components/ui/carousel'
 import Image from 'next/image'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function Timeline({ data }: ComponentProps) {
 	return (
@@ -78,117 +79,119 @@ export default function Timeline({ data }: ComponentProps) {
 														View details <ArrowUpRight className="size-4" />
 													</button>
 												</DialogTrigger>
-												<DialogContent className="max-w-5xl overflow-y-auto bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950">
-													<DialogHeader className="px-6 pt-6">
-														<div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-															<div className="flex flex-col gap-4">
-																<DialogTitle className="text-xl md:text-2xl font-bold text-blue-600">
-																	{item.title}
-																</DialogTitle>
-																<DialogDescription className="text-gray-600 dark:text-gray-300 [text-wrap:anywhere]">
-																	{item.description}
-																</DialogDescription>
-															</div>
-															{item.url[0] && (
-																<div className="hidden md:block shrink-0">
-																	<a
-																		href={item.url[0]}
-																		target="_blank"
-																		className="inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
-																	>
-																		Learn more <ExternalLink className="size-4" />
-																	</a>
+												<DialogContent className="max-w-5xl bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950">
+													<ScrollArea className="max-h-[80vh]">
+														<DialogHeader className="px-6 pt-6">
+															<div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+																<div className="flex flex-col gap-4">
+																	<DialogTitle className="text-xl md:text-2xl font-bold text-blue-600">
+																		{item.title}
+																	</DialogTitle>
+																	<DialogDescription className="text-gray-600 dark:text-gray-300 [text-wrap:anywhere]">
+																		{item.description}
+																	</DialogDescription>
 																</div>
-															)}
-														</div>
-													</DialogHeader>
-
-													<div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
-														{item.images.map((src, i) => (
-															<motion.div
-																key={i}
-																initial={{
-																	opacity: 0,
-																	y: 20,
-																}}
-																animate={{
-																	opacity: 1,
-																	y: 0,
-																}}
-																transition={{
-																	duration: 0.4,
-																	delay: i * 0.1,
-																}}
-																className="group relative aspect-video overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/5"
-															>
-																<Image
-																	fill
-																	className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-																	sizes="(max-width: 1024px) 50vw, 33vw"
-																	alt={item.alt[i]}
-																	src={src}
-																/>
-																<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-																	<span className="absolute bottom-0 left-0 w-full p-3 text-sm font-medium text-white translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-																		{item.alt[i]}
-																	</span>
-																</div>
-															</motion.div>
-														))}
-													</div>
-
-													<div className="block sm:hidden p-4">
-														<Carousel opts={{ loop: true }}>
-															<CarouselContent>
-																{item.images.map((src, i) => (
-																	<CarouselItem key={i}>
-																		<motion.div
-																			initial={{
-																				opacity: 0,
-																				y: 20,
-																			}}
-																			animate={{
-																				opacity: 1,
-																				y: 0,
-																			}}
-																			transition={{
-																				duration: 0.4,
-																				delay: i * 0.1,
-																			}}
-																			className="relative aspect-video overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800"
+																{item.url[0] && (
+																	<div className="hidden md:block shrink-0">
+																		<a
+																			href={item.url[0]}
+																			target="_blank"
+																			className="inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
 																		>
-																			<Image
-																				fill
-																				className="object-cover"
-																				sizes="100vw"
-																				alt={item.alt[i]}
-																				src={src}
-																			/>
-																			<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent">
-																				<span className="absolute bottom-0 left-0 w-full p-3 text-sm text-white font-medium">
-																					{item.alt[i]}
-																				</span>
-																			</div>
-																		</motion.div>
-																	</CarouselItem>
-																))}
-															</CarouselContent>
-															<CarouselPrevious className="left-2" />
-															<CarouselNext className="right-2" />
-														</Carousel>
-													</div>
+																			Learn more <ExternalLink className="size-4" />
+																		</a>
+																	</div>
+																)}
+															</div>
+														</DialogHeader>
 
-													{item.url[0] && (
-														<div className="md:hidden p-4 flex justify-center border-t border-gray-200 dark:border-gray-800">
-															<a
-																href={item.url[0]}
-																target="_blank"
-																className="w-full inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
-															>
-																Learn more <ExternalLink className="size-4" />
-															</a>
+														<div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+															{item.images.map((src, i) => (
+																<motion.div
+																	key={i}
+																	initial={{
+																		opacity: 0,
+																		y: 20,
+																	}}
+																	animate={{
+																		opacity: 1,
+																		y: 0,
+																	}}
+																	transition={{
+																		duration: 0.4,
+																		delay: i * 0.1,
+																	}}
+																	className="group relative aspect-video overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/5"
+																>
+																	<Image
+																		fill
+																		className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+																		sizes="(max-width: 1024px) 50vw, 33vw"
+																		alt={item.alt[i]}
+																		src={src}
+																	/>
+																	<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+																		<span className="absolute bottom-0 left-0 w-full p-3 text-sm font-medium text-white translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
+																			{item.alt[i]}
+																		</span>
+																	</div>
+																</motion.div>
+															))}
 														</div>
-													)}
+
+														<div className="block sm:hidden p-4">
+															<Carousel opts={{ loop: true }}>
+																<CarouselContent>
+																	{item.images.map((src, i) => (
+																		<CarouselItem key={i}>
+																			<motion.div
+																				initial={{
+																					opacity: 0,
+																					y: 20,
+																				}}
+																				animate={{
+																					opacity: 1,
+																					y: 0,
+																				}}
+																				transition={{
+																					duration: 0.4,
+																					delay: i * 0.1,
+																				}}
+																				className="relative aspect-video overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800"
+																			>
+																				<Image
+																					fill
+																					className="object-cover"
+																					sizes="100vw"
+																					alt={item.alt[i]}
+																					src={src}
+																				/>
+																				<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent">
+																					<span className="absolute bottom-0 left-0 w-full p-3 text-sm text-white font-medium">
+																						{item.alt[i]}
+																					</span>
+																				</div>
+																			</motion.div>
+																		</CarouselItem>
+																	))}
+																</CarouselContent>
+																<CarouselPrevious className="left-2" />
+																<CarouselNext className="right-2" />
+															</Carousel>
+														</div>
+
+														{item.url[0] && (
+															<div className="md:hidden p-4 flex justify-center border-t border-gray-200 dark:border-gray-800">
+																<a
+																	href={item.url[0]}
+																	target="_blank"
+																	className="w-full inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium"
+																>
+																	Learn more <ExternalLink className="size-4" />
+																</a>
+															</div>
+														)}
+													</ScrollArea>
 												</DialogContent>
 											</Dialog>
 										) : (
