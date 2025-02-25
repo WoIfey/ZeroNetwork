@@ -242,8 +242,8 @@ export default function Header({ data }: ComponentProps) {
 							<div className="absolute inset-0 -z-10 rounded-2xl" />
 							{data.visible[0] && (
 								<Alert className="mb-4 bg-transparent border-none p-0 py-4">
-									<AlertDescription className="flex justify-center items-center gap-2">
-										<AlertCircle className="size-5 sm:size-4" />
+									<AlertDescription className="flex flex-col md:flex-row justify-center items-center gap-2">
+										<AlertCircle className="size-4" />
 										{data.alert}
 									</AlertDescription>
 								</Alert>
