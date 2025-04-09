@@ -218,7 +218,7 @@ export default function Header({ data }: ComponentProps) {
 					<div className="relative min-h-[300px] sm:min-h-[400px] flex items-center justify-center">
 						<div className="absolute inset-0 w-full h-full">
 							<div className="relative h-full flex items-center justify-evenly sm:justify-between">
-								<div className="relative size-96 mb-20 lg:mb-0 animate-float-slow">
+								<div className="relative size-96 mb-20 lg:mb-0 animate-float">
 									<Image
 										fill
 										src="https://wolfey.s-ul.eu/L2c6zc9c"

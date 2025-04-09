@@ -6,7 +6,7 @@ export async function fetchData(): Promise<ServerConfig | null> {
         include: {
             timeline: {
                 orderBy: {
-                    year: 'desc',
+                    id: 'desc',
                 }
             },
             teams: {

@@ -4,7 +4,7 @@ import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
 import Dev from '@/components/Dev'
-import { flag } from '@vercel/flags/next'
+import { flag } from 'flags/next'
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] })
 const syne = Syne({ variable: '--font-syne', subsets: ['latin'] })

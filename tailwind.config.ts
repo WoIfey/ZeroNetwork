@@ -14,14 +14,18 @@ export default {
 				syne: ['var(--font-syne)'],
 			},
 			animation: {
-				'float-slow': 'float 6s ease-in-out infinite',
-				'float-delayed': 'float 6s ease-in-out 3s infinite',
+				'float': 'float 6s ease-in-out infinite',
+				'float-delayed': 'float-opposite 6s ease-in-out infinite',
 			},
 			keyframes: {
 				float: {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-20px)' },
 				},
+				'float-opposite': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(20px)' },
+				}
 			},
 			colors: {
 				background: 'hsl(var(--background))',

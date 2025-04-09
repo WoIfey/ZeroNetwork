@@ -4,6 +4,12 @@ import { Loader2, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
 import Discord from './ui/discord'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from './ui/tooltip'
 
 export default function Login({ data }: ComponentProps) {
 	const { data: session, isPending } = authClient.useSession()
