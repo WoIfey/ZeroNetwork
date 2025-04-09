@@ -35,13 +35,26 @@ export default function Login({ data }: ComponentProps) {
 	return (
 		<div className="flex justify-center p-4 gap-4">
 			{!session && (
-				<Button disabled={data.visible[3]} onClick={signIn} className="gap-2">
-					<Discord className="size-5" />
-					Login with Discord
-				</Button>
+				<TooltipProvider delayDuration={0}>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<div>
+								<Button disabled={data.visible[3]} onClick={signIn} className="gap-2">
+									<Discord className="size-5" />
+									Login with Discord
+								</Button>
+							</div>
+						</TooltipTrigger>
+						{data.visible[3] && (
+							<TooltipContent>
+								<p>Login is currently disabled</p>
+							</TooltipContent>
+						)}
+					</Tooltip>
+				</TooltipProvider>
 			)}
 			{session?.user?.name && (
-				<p className="flex items-center text-sm">Welcome, {session.user.name}!</p>
+				<p className="flex items-center text-sm">{session.user.name}</p>
 			)}
 			{session && (
 				<Button onClick={signOut} className="gap-2">
