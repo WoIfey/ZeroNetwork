@@ -4,12 +4,6 @@ import { Loader2, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
 import Discord from './ui/discord'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from './ui/tooltip'
 
 export default function Login({ data }: ComponentProps) {
 	const { data: session, isPending } = authClient.useSession()
@@ -33,34 +27,24 @@ export default function Login({ data }: ComponentProps) {
 	}
 
 	return (
-		<div className="flex justify-center p-4 gap-4">
-			{!session && (
-				<TooltipProvider delayDuration={0}>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<div>
-								<Button disabled={data.visible[3]} onClick={signIn} className="gap-2">
-									<Discord className="size-5" />
-									Login with Discord
-								</Button>
-							</div>
-						</TooltipTrigger>
-						{data.visible[3] && (
-							<TooltipContent>
-								<p>Login is currently disabled</p>
-							</TooltipContent>
-						)}
-					</Tooltip>
-				</TooltipProvider>
-			)}
-			{session?.user?.name && (
-				<p className="flex items-center text-sm">{session.user.name}</p>
-			)}
-			{session && (
-				<Button onClick={signOut} className="gap-2">
-					<LogOut />
-					Logout
-				</Button>
+		<div className="flex justify-center items-center p-4 gap-4">
+			{!session ? (
+				<>
+					{data.visible[3] && (
+						<Button onClick={signIn} className="gap-2">
+							<Discord className="size-5" />
+							Login with Discord
+						</Button>
+					)}
+				</>
+			) : (
+				<>
+					<p className="text-sm">{session.user?.name}</p>
+					<Button onClick={signOut} className="gap-2">
+						<LogOut className="size-5" />
+						Logout
+					</Button>
+				</>
 			)}
 		</div>
 	)
