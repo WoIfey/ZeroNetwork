@@ -60,3 +60,14 @@ type ServerConfig = BaseItem & {
 type ComponentProps = {
     data: ServerConfig
 }
+
+type Polls = {
+    id: number
+    question: string
+    answers: string[]
+    votes: number[]
+    voterIps: string[]
+    visible: boolean
+    createdAt: Date
+    updatedAt: Date
+}

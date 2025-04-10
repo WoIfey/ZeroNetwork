@@ -8,7 +8,7 @@ async function main() {
         create: {
             ips: ['joe.onthewifi.com', 'play.hypixel.net'],
             alert: 'You are currently developing this site.',
-            visible: [true, true, true, false],
+            visible: [true, true, true, true],
         },
     })
 
@@ -96,6 +96,25 @@ async function main() {
                 serversId: 1,
             },
         ],
+    })
+
+    await prisma.poll.createMany({
+        data: [
+            {
+                question: "What's your favorite feature?",
+                answers: ['Timeline', 'Server status'],
+                visible: true,
+                votes: [0, 0],
+                voterIps: []
+            },
+            {
+                question: "How did you find us?",
+                answers: ['Discord', 'GitHub', 'Friend', 'Search'],
+                visible: true,
+                votes: [0, 0, 0, 0],
+                voterIps: []
+            }
+        ]
     })
 
     await prisma.images.createMany({

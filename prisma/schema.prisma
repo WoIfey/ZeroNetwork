@@ -126,3 +126,16 @@ model Verification {
 
   @@map("verification")
 }
+
+model Poll {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answers   String[]
+  votes     Int[]
+  voterIps  String[] @default([])
+  visible   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("poll")
+}

@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import * as Editable from '@/components/ui/editable'
 import { authClient } from '@/lib/auth-client'
 import { updateServerIps } from '@/actions/data'
+import Poll from './Poll'
 
 export default function Header({ data }: ComponentProps) {
 	const [isLoading, setIsLoading] = useState(true)
@@ -255,6 +256,7 @@ export default function Header({ data }: ComponentProps) {
 								Join our incredible Minecraft community and experience unique gameplay
 								with friends.
 							</p>
+							<Poll />
 						</div>
 					</div>
 				</div>
