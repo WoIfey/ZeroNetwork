@@ -2,17 +2,6 @@
 import { prisma } from "@/lib/prisma"
 import { headers } from "next/headers"
 
-export async function getPoll() {
-    return await prisma.poll.findFirst({
-        where: {
-            visible: true
-        },
-        orderBy: {
-            createdAt: 'desc'
-        }
-    })
-}
-
 export async function getAllPolls() {
     return await prisma.poll.findMany({
         orderBy: {
@@ -50,30 +39,7 @@ export async function hasVoted(pollId: number) {
     return poll.voterIps.includes(ip)
 }
 
-export async function createPoll(userId: string | null) {
-    const defaultPollQuestion = await prisma.poll.findFirst({
-        where: {
-            votes: {
-                equals: [0, 0, 0]
-            }
-        }
-    })
-
-    if (!defaultPollQuestion) {
-        throw new Error('No available poll questions found')
-    }
-
-    return await prisma.poll.create({
-        data: {
-            question: defaultPollQuestion.question,
-            answers: defaultPollQuestion.answers,
-            votes: new Array(defaultPollQuestion.answers.length).fill(0),
-            voterIps: []
-        }
-    })
-}
-
-export async function vote(pollId: number, optionIndex: number, userId: string | null) {
+export async function vote(pollId: number, optionIndex: number) {
     const poll = await prisma.poll.findUnique({
         where: { id: pollId }
     })

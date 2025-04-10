@@ -20,7 +20,7 @@ import {
 	createNewPoll,
 	togglePollVisibility,
 } from '@/actions/poll'
-import { Vote, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { Input } from './ui/input'
 import { Skeleton } from './ui/skeleton'
 
@@ -68,11 +68,7 @@ export default function Poll() {
 		if (selectedOption === null || hasUserVoted[pollId]) return
 
 		try {
-			const updatedPoll = await vote(
-				pollId,
-				selectedOption,
-				session?.user?.id ?? null
-			)
+			const updatedPoll = await vote(pollId, selectedOption)
 			setPolls(polls.map(p => (p.id === pollId ? updatedPoll : p)))
 			setSelectedOption(null)
 			setHasUserVoted(prev => ({ ...prev, [pollId]: true }))
