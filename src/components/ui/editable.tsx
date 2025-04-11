@@ -51,6 +51,7 @@ interface EditableContextValue {
 	readOnly?: boolean
 	required?: boolean
 	invalid?: boolean
+	dismissible: boolean
 }
 
 const EditableContext = React.createContext<EditableContextValue | null>(null)
@@ -90,6 +91,7 @@ interface EditableRootProps
 	readOnly?: boolean
 	required?: boolean
 	invalid?: boolean
+	dismissible?: boolean
 }
 
 const EditableRoot = React.forwardRef<HTMLDivElement, EditableRootProps>(
@@ -117,6 +119,7 @@ const EditableRoot = React.forwardRef<HTMLDivElement, EditableRootProps>(
 			required,
 			readOnly,
 			invalid,
+			dismissible = true,
 			className,
 			...rootProps
 		} = props
@@ -217,6 +220,7 @@ const EditableRoot = React.forwardRef<HTMLDivElement, EditableRootProps>(
 				readOnly,
 				required,
 				invalid,
+				dismissible,
 			}),
 			[
 				id,
@@ -238,6 +242,7 @@ const EditableRoot = React.forwardRef<HTMLDivElement, EditableRootProps>(
 				required,
 				readOnly,
 				invalid,
+				dismissible,
 			]
 		)
 
@@ -408,10 +413,8 @@ const EditableInput = React.forwardRef<HTMLInputElement, EditableInputProps>(
 
 		const onBlur = React.useCallback(
 			(event: React.FocusEvent<InputElement>) => {
-				if (isReadOnly) return
+				if (isReadOnly || !context.dismissible) return
 				const relatedTarget = event.relatedTarget
-				console.log('blur-sm', relatedTarget)
-
 				const isAction =
 					relatedTarget instanceof HTMLElement &&
 					relatedTarget.closest(`[${DATA_ACTION_ATTR}=""]`)
@@ -420,7 +423,7 @@ const EditableInput = React.forwardRef<HTMLInputElement, EditableInputProps>(
 					context.onSubmit(context.value)
 				}
 			},
-			[context.value, context.onSubmit, isReadOnly]
+			[context.value, context.onSubmit, isReadOnly, context.dismissible]
 		)
 
 		const onChange = React.useCallback(

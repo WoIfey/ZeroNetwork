@@ -20,10 +20,10 @@ export default function Home({ data }: ComponentProps) {
 				<Images data={data} />
 			</div>
 			<div className="container mx-auto px-6 lg:px-8">
-				<WithersWrath />
 				<Timeline data={data} />
+				<WithersWrath />
 				<Description />
-				<Team data={data} />
+				<Team />
 			</div>
 			<Footer />
 		</main>

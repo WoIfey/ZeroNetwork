@@ -1,5 +1,6 @@
-"use server"
-import { prisma } from "@/lib/prisma";
+'use server'
+
+import { prisma } from '@/lib/prisma'
 
 export async function fetchData(): Promise<ServerConfig | null> {
     return await prisma.servers.findFirst({
@@ -9,11 +10,7 @@ export async function fetchData(): Promise<ServerConfig | null> {
                     id: 'desc',
                 }
             },
-            teams: {
-                orderBy: {
-                    id: 'asc',
-                }
-            },
+
             images: {
                 orderBy: {
                     createdAt: 'desc',
@@ -23,19 +20,26 @@ export async function fetchData(): Promise<ServerConfig | null> {
     });
 }
 
-export async function updateServerIps(serverId: number, index: number, newIp: string) {
-    const server = await prisma.servers.findUnique({
-        where: { id: serverId },
-        select: { ips: true }
-    });
+export async function updateServerIps(id: number, index: string, ip: string) {
+    const data = await prisma.servers.findUnique({
+        where: { id },
+        select: { ips: true },
+    })
 
-    if (!server) throw new Error('Server not found');
+    if (!data) throw new Error('Data not found')
 
-    const newIps = [...server.ips];
-    newIps[index] = newIp;
+    const updatedIps = [...data.ips]
+    updatedIps[parseInt(index)] = ip
 
-    return await prisma.servers.update({
-        where: { id: serverId },
-        data: { ips: newIps }
-    });
+    return prisma.servers.update({
+        where: { id },
+        data: { ips: updatedIps },
+    })
+}
+
+export async function updateServerVisibility(id: number, visibility: boolean[]) {
+    return prisma.servers.update({
+        where: { id },
+        data: { visible: visibility },
+    })
 }

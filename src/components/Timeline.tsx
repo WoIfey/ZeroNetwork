@@ -18,16 +18,16 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel'
-import Image from 'next/image'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import ImageDialog from './ImageDialog'
 
 export default function Timeline({ data }: ComponentProps) {
 	return (
-		<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div className="relative mx-auto mt-12">
+		<div className="mx-auto max-w-7xl px-0 lg:px-8">
+			<div className="relative mx-auto mt-2">
 				<div className="absolute left-[16px] md:left-[calc(50%-1px)] h-full w-[2px] bg-gradient-to-b from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800" />
 
-				<div className="mx-auto flex flex-col gap-8 md:gap-16">
+				<div className="mx-auto flex flex-col gap-8 md:gap-12">
 					{data.timeline.map((item, index) => (
 						<motion.article
 							key={`${item.year}-${index}`}
@@ -38,23 +38,27 @@ export default function Timeline({ data }: ComponentProps) {
 							whileInView={{ opacity: 1, x: 0, y: 0 }}
 							viewport={{ once: true, margin: '-50px' }}
 							transition={{
-								delay: index * 0.1,
+								delay: index * 0.05,
 								type: 'spring',
 								stiffness: 50,
 							}}
 						>
 							<div
-								className={`w-full md:w-5/12 rounded-lg p-5 ${
+								className={`w-full md:w-[45%] md:p-5 py-3 ${
 									index % 2 === 0 ? 'md:text-right text-left' : 'text-left'
 								}`}
 							>
 								<time className="inline-block rounded-full bg-gray-100 dark:bg-gray-800 px-3 text-sm font-medium leading-7 text-gray-600 dark:text-gray-300">
 									{item.year}
 								</time>
-								<h3 className="font-syne mt-3 font-semibold text-xl text-gray-900 dark:text-gray-100">
+								<h3 className="font-syne mt-3 font-semibold text-2xl lg:text-3xl text-gray-900 dark:text-gray-100">
 									{item.title}
 								</h3>
-								<p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+								<p
+									className={`mt-3 text-base leading-relaxed text-gray-600 dark:text-gray-300 lg:max-w-96 ${
+										index % 2 === 0 ? 'md:ml-auto' : ''
+									}`}
+								>
 									{item.subtitle}
 								</p>
 								<div
@@ -83,121 +87,37 @@ export default function Timeline({ data }: ComponentProps) {
 													<ScrollArea className="max-h-[90vh] overflow-x-hidden">
 														<DialogHeader className="sticky top-0 z-10 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 px-6 py-4">
 															<div className="flex flex-col gap-2">
-																<DialogTitle className="text-xl font-bold text-blue-600">
+																<DialogTitle className="text-xl font-bold">
 																	{item.title}
 																</DialogTitle>
 																<DialogDescription className="text-sm text-gray-600 dark:text-gray-300">
 																	{item.description}
 																</DialogDescription>
 															</div>
+															<DialogClose className="absolute top-4 right-4 z-50">
+																<X className="size-4" />
+															</DialogClose>
 														</DialogHeader>
-
 														<div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
 															{item.images.map((src, i) => (
-																<Dialog key={i}>
-																	<DialogTrigger asChild>
-																		<motion.div
-																			initial={{ opacity: 0, y: 20 }}
-																			animate={{ opacity: 1, y: 0 }}
-																			transition={{ duration: 0.4, delay: i * 0.1 }}
-																			className="group relative aspect-video overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/5 cursor-zoom-in"
-																		>
-																			<Image
-																				fill
-																				className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-																				sizes="(max-width: 1024px) 50vw, 33vw"
-																				alt={item.alt[i]}
-																				src={src}
-																			/>
-																			<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-																				<span className="absolute bottom-0 left-0 w-full p-3 text-sm font-medium text-white translate-y-4 transition-transform duration-300 group-hover:translate-y-0">
-																					{item.alt[i]}
-																				</span>
-																			</div>
-																		</motion.div>
-																	</DialogTrigger>
-																	<DialogTitle className="hidden" />
-																	<DialogContent
-																		hideCloseButton={true}
-																		className="max-w-[90vw] max-h-[90vh] bg-transparent border-0 p-0"
-																	>
-																		<div className="relative w-full h-full flex items-center justify-center">
-																			<DialogClose className="absolute top-2 right-2 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-black/70">
-																				<X className="size-4" />
-																			</DialogClose>
-																			<div className="max-w-[95vw] max-h-[90vh] relative">
-																				<Image
-																					src={src}
-																					alt={item.alt[i]}
-																					className="w-auto h-auto max-w-full max-h-[90vh] object-contain rounded-lg"
-																					width={1920}
-																					height={1080}
-																					priority
-																				/>
-																			</div>
-																		</div>
-																	</DialogContent>
-																</Dialog>
+																<div key={i}>
+																	<ImageDialog src={src} alt={item.alt[i]} index={i} />
+																</div>
 															))}
 														</div>
-
-														<div className="block sm:hidden">
-															<Carousel className="w-full" opts={{ loop: true }}>
-																<CarouselContent className="-ml-0">
+														<div className="block sm:hidden p-4">
+															<Carousel className="w-full max-w-full" opts={{ loop: true }}>
+																<CarouselContent>
 																	{item.images.map((src, i) => (
-																		<CarouselItem key={i} className="p-4">
-																			<Dialog>
-																				<DialogTrigger asChild>
-																					<motion.div
-																						initial={{ opacity: 0, y: 20 }}
-																						animate={{ opacity: 1, y: 0 }}
-																						transition={{ duration: 0.4, delay: i * 0.1 }}
-																						className="relative aspect-video overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 cursor-zoom-in"
-																					>
-																						<Image
-																							fill
-																							className="object-cover"
-																							sizes="100vw"
-																							alt={item.alt[i]}
-																							src={src}
-																						/>
-																						<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent">
-																							<span className="absolute bottom-0 left-0 w-full p-3 text-sm text-white font-medium">
-																								{item.alt[i]}
-																							</span>
-																						</div>
-																					</motion.div>
-																				</DialogTrigger>
-																				<DialogTitle className="hidden" />
-																				<DialogContent
-																					hideCloseButton={true}
-																					className="max-w-[95vw] max-h-[90vh] bg-transparent border-0 p-0"
-																				>
-																					<DialogClose className="absolute top-2 right-2 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-black/70">
-																						<X className="size-4" />
-																					</DialogClose>
-																					<div className="relative w-full h-full flex items-center justify-center">
-																						<div className="max-w-[95vw] max-h-[90vh] relative">
-																							<Image
-																								src={src}
-																								alt={item.alt[i]}
-																								className="w-auto h-auto max-w-full max-h-[90vh] object-contain rounded-lg"
-																								width={1920}
-																								height={1080}
-																								priority
-																							/>
-																						</div>
-																					</div>
-																				</DialogContent>
-																			</Dialog>
+																		<CarouselItem key={i} className="px-1">
+																			<ImageDialog src={src} alt={item.alt[i]} index={i} />
 																		</CarouselItem>
 																	))}
 																</CarouselContent>
 																<CarouselPrevious className="left-2" />
-																<CarouselNext className="right-2" />
+																<CarouselNext className="right-3" />
 															</Carousel>
 														</div>
-
 														{item.url[0] && (
 															<div className="sticky bottom-0 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-t border-gray-200 dark:border-gray-800 p-4 flex justify-center">
 																<a
@@ -223,23 +143,22 @@ export default function Timeline({ data }: ComponentProps) {
 										))}
 								</div>
 							</div>
-
-							<motion.div
-								className={`absolute left-[7px] md:left-[calc(50%-10px)] top-6 size-5 rounded-full border-[3px] border-white dark:border-gray-900 ${
-									index === 0
-										? 'bg-green-500 shadow-[0_0_12px_4px_rgba(34,197,94,0.4)] dark:bg-green-400 dark:shadow-[0_0_12px_4px_rgba(74,222,128,0.4)]'
-										: 'bg-blue-500 dark:bg-blue-400'
-								}`}
-								initial={{ scale: 0, opacity: 0 }}
-								whileInView={{ scale: 1, opacity: 1 }}
-								viewport={{ once: true }}
-								transition={{
-									type: 'spring',
-									stiffness: 300,
-									damping: 20,
-									delay: index * 0.15,
-								}}
-							/>
+							<div className="absolute left-[7px] md:left-[calc(50%-10px)] top-4 md:top-6">
+								<motion.div
+									className="relative size-5"
+									initial={{ scale: 0, opacity: 0 }}
+									whileInView={{ scale: 1, opacity: 1 }}
+									viewport={{ once: true }}
+									transition={{
+										type: 'spring',
+										stiffness: 300,
+										damping: 20,
+										delay: index * 0.15,
+									}}
+								>
+									<div className="relative rounded-full size-5 bg-blue-500 dark:bg-blue-400 border-[3px] border-white dark:border-gray-900" />
+								</motion.div>
+							</div>
 						</motion.article>
 					))}
 				</div>

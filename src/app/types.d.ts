@@ -29,14 +29,6 @@ type ImageItem = BaseItem & {
     alt: string
 }
 
-type TeamMember = BaseItem & {
-    name: string
-    role: string
-    url: string
-    image: string
-    location: string
-}
-
 type TimelineItem = BaseItem & {
     title: string
     subtitle: string
@@ -53,7 +45,6 @@ type ServerConfig = BaseItem & {
     alert: string
     visible: boolean[] // [alert, server1, server2, whitelist]
     timeline: TimelineItem[]
-    teams: TeamMember[]
     images: ImageItem[]
 }
 
@@ -70,4 +61,10 @@ type Polls = {
     visible: boolean
     createdAt: Date
     updatedAt: Date
+}
+
+type ImageDialogProps = {
+    src: string
+    alt: string
+    index: number
 }
