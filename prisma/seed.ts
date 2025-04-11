@@ -8,7 +8,7 @@ async function main() {
         create: {
             ips: ['joe.onthewifi.com', 'play.hypixel.net'],
             alert: 'You are currently developing this site.',
-            visible: [true, true, true, false],
+            visible: [true, true, true, true],
         },
     })
 
@@ -61,41 +61,23 @@ async function main() {
         ],
     })
 
-    await prisma.teams.createMany({
+    await prisma.poll.createMany({
         data: [
             {
-                name: 'Joe1',
-                role: 'CEO',
-                url: 'https://github.com/ImHer0',
-                image: 'https://wolfey.s-ul.eu/gSlQq2Ky',
-                location: 'Brit',
-                serversId: 1,
+                question: "What's your favorite feature?",
+                answers: ['Timeline', 'Server status'],
+                visible: true,
+                votes: [0, 0],
+                voterIps: []
             },
             {
-                name: 'Joe2',
-                role: 'CEO',
-                url: 'https://github.com/ImHer0',
-                image: 'https://wolfey.s-ul.eu/gSlQq2Ky',
-                location: 'Brit',
-                serversId: 1,
-            },
-            {
-                name: 'Deez3',
-                role: 'Engineer',
-                url: 'https://github.com/WoIfey',
-                image: 'https://wolfey.s-ul.eu/LAKIfnzS',
-                location: 'Finn',
-                serversId: 1,
-            },
-            {
-                name: 'Deez4',
-                role: 'Engineer',
-                url: 'https://github.com/WoIfey',
-                image: 'https://wolfey.s-ul.eu/LAKIfnzS',
-                location: 'Finn',
-                serversId: 1,
-            },
-        ],
+                question: "How did you find us?",
+                answers: ['Discord', 'GitHub', 'Friend', 'Search'],
+                visible: true,
+                votes: [0, 0, 0, 0],
+                voterIps: []
+            }
+        ]
     })
 
     await prisma.images.createMany({

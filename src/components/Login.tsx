@@ -1,15 +1,15 @@
 'use client'
 
-import { Loader2, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { authClient } from '@/lib/auth-client'
 import Discord from './ui/discord'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from './ui/tooltip'
 
 export default function Login({ data }: ComponentProps) {
 	const { data: session, isPending } = authClient.useSession()
@@ -24,43 +24,42 @@ export default function Login({ data }: ComponentProps) {
 		await authClient.signOut()
 	}
 
-	if (isPending) {
-		return (
-			<div className="flex justify-center p-4">
-				<Loader2 className="animate-spin" />
-			</div>
-		)
-	}
-
 	return (
-		<div className="flex justify-center p-4 gap-4">
-			{!session && (
-				<TooltipProvider delayDuration={0}>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<div>
-								<Button disabled={data.visible[3]} onClick={signIn} className="gap-2">
-									<Discord className="size-5" />
-									Login with Discord
-								</Button>
-							</div>
-						</TooltipTrigger>
-						{data.visible[3] && (
-							<TooltipContent>
-								<p>Login is currently disabled</p>
-							</TooltipContent>
-						)}
-					</Tooltip>
-				</TooltipProvider>
-			)}
-			{session?.user?.name && (
-				<p className="flex items-center text-sm">{session.user.name}</p>
-			)}
-			{session && (
-				<Button onClick={signOut} className="gap-2">
-					<LogOut />
-					Logout
-				</Button>
+		<div className="flex justify-center items-center p-4 gap-4">
+			{!session ? (
+				<>
+					{data.visible[3] && (
+						<Button
+							variant="ghost"
+							onClick={signIn}
+							disabled={isPending}
+							className="gap-2 text-muted-foreground hover:text-foreground hover:bg-transparent"
+						>
+							<Discord className="size-5" />
+							<span className={isPending ? 'animate-pulse opacity-50' : ''}>
+								Login with Discord
+							</span>
+						</Button>
+					)}
+				</>
+			) : (
+				<DropdownMenu>
+					<DropdownMenuTrigger className="mt-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+						<span className={isPending ? 'animate-pulse opacity-50' : ''}>
+							{session.user?.name}
+						</span>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent>
+						<DropdownMenuItem
+							onClick={signOut}
+							className="gap-2"
+							disabled={isPending}
+						>
+							<LogOut className="size-4" />
+							<span>Logout</span>
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			)}
 		</div>
 	)

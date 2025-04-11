@@ -32,9 +32,9 @@ const facts = [
 export default function Description() {
 	return (
 		<div className="py-12 sm:py-16">
-			<div className="mx-auto max-w-7xl px-6 lg:px-8">
+			<div className="mx-auto max-w-7xl">
 				<motion.div
-					className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left"
+					className="mx-auto max-w-3xl text-center"
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
@@ -55,7 +55,7 @@ export default function Description() {
 					{facts.map((fact, index) => (
 						<motion.div
 							key={fact.name}
-							className="relative rounded-2xl border border-gray-200 dark:border-gray-800 p-8 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 group"
+							className="relative rounded-xl bg-gradient-to-b from-gray-50/20 to-gray-900/10 dark:from-gray-50/10 dark:to-gray-900/20 p-8"
 							initial={{ opacity: 0, y: 20 }}
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true }}

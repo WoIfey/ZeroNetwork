@@ -54,6 +54,7 @@ export default function Images({ data }: ComponentProps) {
 							fill
 							className="object-cover"
 							priority
+							sizes="(max-width: 768px) 100vw, 33vw"
 						/>
 						<div className="absolute inset-0 bg-gradient-to-t from-black/100 via-black/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
 							<span className="absolute bottom-0 left-0 w-full p-2 text-white">

@@ -15,7 +15,6 @@ model Servers {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt
   timeline  Timeline[]
-  teams     Teams[]
   images    Images[]
 
   @@map("servers")
@@ -37,21 +36,6 @@ model Timeline {
   serversId   Int?
 
   @@map("timeline")
-}
-
-model Teams {
-  id        Int      @id @default(autoincrement())
-  name      String
-  role      String
-  url       String
-  image     String
-  location  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  Servers   Servers? @relation(fields: [serversId], references: [id])
-  serversId Int?
-
-  @@map("teams")
 }
 
 model Images {
@@ -125,4 +109,17 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Poll {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answers   String[]
+  votes     Int[]
+  voterIps  String[] @default([])
+  visible   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("poll")
 }

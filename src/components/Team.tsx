@@ -3,49 +3,77 @@
 import { motion } from 'motion/react'
 import Image from 'next/image'
 
-export default function Team({ data }: ComponentProps) {
+const members = [
+	{
+		name: 'ImHer0',
+		role: 'CEO',
+		location: 'United Kingdom',
+		description:
+			'The creator of "The Im Her Zero Network" (ZeroNetwork) and the host of the servers. Does datapacks as a hobby.',
+		image: 'https://wolfey.s-ul.eu/7uOirGrV',
+		url: 'https://github.com/ImHer0',
+	},
+	{
+		name: 'Wolfey',
+		role: 'Web Developer',
+		location: 'Finland',
+		description: 'hi i do some web stuff and this site',
+		image: 'https://wolfey.s-ul.eu/GdEOHutp',
+		url: 'https://github.com/WoIfey',
+	},
+]
+
+export default function Team() {
 	return (
-		<div className="mx-auto max-w-7xl px-6 lg:px-8 pb-16">
-			<div className="mx-auto max-w-2xl lg:mx-0">
-				<h2 className="font-syne text-3xl font-bold tracking-tight sm:text-4xl">
-					Meet the Team
-				</h2>
-			</div>
-			<ul className="mx-auto mt-10 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16 text-center sm:grid-cols-3 md:grid-cols-4 lg:mx-0 lg:max-w-none">
-				{data.teams.map((person, index) => (
-					<motion.li
-						key={person.name}
+		<div className="container mx-auto py-16 px-4">
+			<h2 className="text-center font-syne text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-12">
+				Meet the Team
+			</h2>
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto">
+				{members.map((member, i) => (
+					<motion.div
+						key={member.name}
 						initial={{ opacity: 0, y: 20 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
-						transition={{ duration: 0.5, delay: index * 0.1 }}
+						transition={{ duration: 0.5, delay: i * 0.1 }}
+						className="flex flex-col items-center rounded-xl p-8"
 					>
-						<a href={person.url} target="_blank" rel="noopener noreferrer">
-							<motion.div
-								className="relative mx-auto size-40 overflow-hidden rounded-lg"
-								whileHover={{ scale: 1.05 }}
-							>
+						<a
+							href={member.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="group w-full"
+						>
+							<motion.div className="relative mx-auto overflow-hidden rounded-xl aspect-square w-full max-w-[320px]">
 								<Image
-									src={person.image}
-									alt={person.name}
-									width={256}
-									height={256}
-									className="object-cover size-40"
+									src={member.image}
+									alt={member.name}
+									fill
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+									className="object-cover"
+									priority
 								/>
 							</motion.div>
-							<h3 className="mt-6 text-base font-semibold leading-7 hover:text-blue-600">
-								{person.name}
+							<h3 className="text-center mt-8 text-2xl md:text-3xl font-bold leading-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors">
+								{member.name}
 							</h3>
 						</a>
-						<p className="text-sm leading-6 text-gray-600 dark:text-gray-400">
-							{person.role}
+						<div className="flex items-center gap-2 mt-3">
+							<p className="text-base font-medium text-blue-600 dark:text-blue-500/90">
+								{member.role}
+							</p>
+							<span className="text-gray-400 dark:text-gray-500">•</span>
+							<p className="text-sm text-gray-800 dark:text-gray-300/90">
+								{member.location}
+							</p>
+						</div>
+						<p className="text-center text-gray-800 dark:text-gray-300/90 text-sm md:text-base mt-6 leading-relaxed max-w-lg">
+							{member.description}
 						</p>
-						<p className="text-sm leading-6 text-gray-500 dark:text-gray-500">
-							{person.location}
-						</p>
-					</motion.li>
+					</motion.div>
 				))}
-			</ul>
+			</div>
 		</div>
 	)
 }
