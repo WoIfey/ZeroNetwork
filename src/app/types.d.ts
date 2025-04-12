@@ -52,19 +52,21 @@ type ComponentProps = {
     data: ServerConfig
 }
 
-type Polls = {
-    id: number
-    question: string
-    answers: string[]
-    votes: number[]
-    voterIps: string[]
-    visible: boolean
-    createdAt: Date
-    updatedAt: Date
-}
-
 type ImageDialogProps = {
     src: string
     alt: string
     index: number
+}
+
+type Polls = {
+    id: number;
+    question: string;
+    answers: string[];
+    votes: number[];
+    visible: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    _count?: {
+        pollVotes: number;
+    };
 }
