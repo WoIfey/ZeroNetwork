@@ -94,10 +94,10 @@ export default function Header({ data }: ComponentProps) {
 			try {
 				await updateAlertVisibility(Number(data.id), newVisibility)
 				setServerVisibility(newVisibility)
-				toast.success('Alert visibility updated successfully!')
+				toast.success('Visibility updated successfully!')
 			} catch (error) {
 				console.error('Failed to update visibility:', error)
-				toast.error('Failed to update alert visibility')
+				toast.error('Failed to update visibility')
 			}
 		},
 		[data.id, serverVisibility]

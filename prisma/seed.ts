@@ -68,14 +68,12 @@ async function main() {
                 answers: ['Timeline', 'Server status'],
                 visible: true,
                 votes: [0, 0],
-                voterIps: []
             },
             {
                 question: "How did you find us?",
                 answers: ['Discord', 'GitHub', 'Friend', 'Search'],
                 visible: true,
                 votes: [0, 0, 0, 0],
-                voterIps: []
             }
         ]
     })

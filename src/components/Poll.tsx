@@ -11,7 +11,6 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { authClient } from '@/lib/auth-client'
@@ -21,11 +20,15 @@ import {
 	getAllPolls,
 	createNewPoll,
 	togglePollVisibility,
+	deletePoll,
 } from '@/actions/poll'
 import { X } from 'lucide-react'
 import { Input } from './ui/input'
 import { Skeleton } from './ui/skeleton'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { getVisitorId } from '@/lib/fingerprint'
+
+const LOCAL_STORAGE_KEY = 'poll_votes'
 
 export default function Poll() {
 	const { data: session } = authClient.useSession()
@@ -36,9 +39,16 @@ export default function Poll() {
 	const [activeTab, setActiveTab] = useState('0')
 	const [isLoading, setIsLoading] = useState(true)
 	const [isCreating, setIsCreating] = useState(false)
+	const [fingerprint, setFingerprint] = useState<string>('')
 	const isAdmin = session?.user?.role === 'admin'
 
 	useEffect(() => {
+		getVisitorId().then(setFingerprint)
+	}, [])
+
+	useEffect(() => {
+		if (!fingerprint) return
+
 		const initPolls = async () => {
 			setIsLoading(true)
 			try {
@@ -47,7 +57,7 @@ export default function Poll() {
 					setPolls(fetchedPolls)
 					const votingStatus: Record<number, boolean> = {}
 					for (const poll of fetchedPolls) {
-						votingStatus[poll.id] = await hasVoted(poll.id)
+						votingStatus[poll.id] = await hasVoted(poll.id, fingerprint)
 					}
 					setHasUserVoted(votingStatus)
 				}
@@ -58,7 +68,17 @@ export default function Poll() {
 			}
 		}
 		initPolls()
-	}, [isAdmin])
+	}, [fingerprint])
+
+	const recordLocalVote = (pollId: number) => {
+		try {
+			const votes = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}')
+			votes[pollId] = true
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(votes))
+		} catch (error) {
+			console.error('Failed to save vote to local storage:', error)
+		}
+	}
 
 	const getTotalVotes = (poll: Polls) => {
 		return poll.votes.reduce((sum: number, current: number) => sum + current, 0)
@@ -69,15 +89,17 @@ export default function Poll() {
 		return (votes / totalVotes) * 100
 	}
 	const handleVote = async (pollId: number) => {
-		if (selectedOption === null || hasUserVoted[pollId]) return
+		if (selectedOption === null || hasUserVoted[pollId] || !fingerprint) return
 
 		try {
-			const updatedPoll = await vote(pollId, selectedOption)
+			const updatedPoll = await vote(pollId, selectedOption, fingerprint)
 			setPolls(polls.map(p => (p.id === pollId ? updatedPoll : p)))
 			setSelectedOption(null)
 			setHasUserVoted(prev => ({ ...prev, [pollId]: true }))
+			recordLocalVote(pollId)
 		} catch (error) {
 			console.error('Failed to submit vote:', error)
+			toast.error(error instanceof Error ? error.message : 'Failed to submit vote')
 		}
 	}
 
@@ -128,73 +150,216 @@ export default function Poll() {
 			<AlertDialog>
 				<AlertDialogTrigger asChild>
 					<Button variant="outline">
-						<div className="relative">
+						<div className="relative mr-2">
 							<div className="size-3 rounded-full ring-2 ring-opacity-30 bg-green-500 ring-green-500" />
 							<div className="absolute inset-0 rounded-full bg-green-500/50 animate-ping" />
 						</div>
 						Vote on Polls
 					</Button>
 				</AlertDialogTrigger>
-				<AlertDialogTitle className="hidden" />
-				<AlertDialogContent>
+				<AlertDialogContent className="max-w-2xl">
+					<AlertDialogTitle className="hidden" />
+					<AlertDialogCancel className="absolute top-2 left-2 z-50 p-3 border-none bg-transparent">
+						<X />
+					</AlertDialogCancel>
 					<Tabs
 						defaultValue={activeTab}
 						onValueChange={setActiveTab}
-						className="items-center"
+						orientation="vertical"
+						className="w-full hidden lg:flex"
 					>
-						<ScrollArea className="w-full max-w-md relative">
-							<TabsList className="inline-flex space-x-2 rounded-none border-b bg-transparent">
+						<div className="flex gap-4 min-h-[350px] w-full">
+							<TabsList className="flex-col rounded-none border-r bg-transparent p-0 min-w-32 max-w-48">
 								{isLoading ? (
-									<>
-										<TabsTrigger
-											value="0"
-											disabled
-											className="hover:bg-accent hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-										>
-											<Skeleton className="h-4 w-16" />
-										</TabsTrigger>
-										<TabsTrigger
-											value="1"
-											disabled
-											className="hover:bg-accent hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-										>
-											<Skeleton className="h-4 w-16" />
-										</TabsTrigger>
-										<TabsTrigger
-											value="2"
-											disabled
-											className="hover:bg-accent hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-										>
-											<Skeleton className="h-4 w-16" />
-										</TabsTrigger>
-									</>
+									<TabsTrigger
+										value="0"
+										disabled
+										className="data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+									>
+										<Skeleton className="h-4 w-16" />
+									</TabsTrigger>
 								) : (
-									<>
-										{displayedPolls.map((poll, index) => (
-											<TabsTrigger
-												key={poll.id}
-												value={index.toString()}
-												className="hover:bg-accent hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-											>
-												Poll {index + 1}
-											</TabsTrigger>
-										))}
-										{isAdmin && (
-											<TabsTrigger
-												value="create"
-												className="hover:bg-accent hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-											>
-												New Poll
-											</TabsTrigger>
-										)}
-									</>
+									displayedPolls.map((poll, index) => (
+										<TabsTrigger
+											key={poll.id}
+											value={index.toString()}
+											className="data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+										>
+											Poll {index + 1}
+										</TabsTrigger>
+									))
 								)}
 							</TabsList>
-							<ScrollBar orientation="horizontal" />
-						</ScrollArea>
-						<ScrollArea className="max-w-md">
+							<div className="flex-1">
+								<div className="border rounded-lg p-4 h-full w-full">
+									{isLoading ? (
+										<TabsContent value="0" className="px-4 py-3">
+											<div className="space-y-4">
+												<Skeleton className="h-8 w-3/4" />
+												<div className="space-y-4">
+													{[1, 2, 3].map((_, i) => (
+														<div key={i} className="space-y-2">
+															<Skeleton className="h-6 w-full" />
+															<Skeleton className="h-2.5 w-full" />
+														</div>
+													))}
+												</div>
+											</div>
+										</TabsContent>
+									) : (
+										displayedPolls.map((poll, index) => (
+											<TabsContent
+												key={poll.id}
+												value={index.toString()}
+												className="px-4 py-3"
+											>
+												<div className="space-y-6">
+													<AlertDialogDescription asChild>
+														<section className="space-y-4">
+															<h2 className="text-lg font-semibold break-all text-black dark:text-white">
+																{poll.question}
+															</h2>
+															{hasUserVoted[poll.id] && (
+																<p className="text-sm text-blue-500">Thank you for voting!</p>
+															)}
+															{poll.answers.map((answer: string, answerIndex: number) => (
+																<div key={answerIndex} className="space-y-2">
+																	{!hasUserVoted[poll.id] ? (
+																		<RadioGroup
+																			value={selectedOption?.toString()}
+																			onValueChange={value => setSelectedOption(Number(value))}
+																			className="gap-2 w-full"
+																		>
+																			<div className="border-input hover:bg-accent hover:text-accent-foreground has-[data-state=checked]:border-primary/50 relative flex w-full items-start rounded-md border p-4 shadow-sm outline-none">
+																				<RadioGroupItem
+																					value={answerIndex.toString()}
+																					id={`option-${poll.id}-${answerIndex}`}
+																					className="order-1 after:absolute after:inset-0"
+																				/>
+																				<div className="grid grow gap-2">
+																					<span className="text-sm text-foreground">{answer}</span>
+																				</div>
+																			</div>
+																		</RadioGroup>
+																	) : (
+																		<>
+																			<div className="flex justify-between items-center gap-2 text-sm text-foreground">
+																				<span>{answer}</span>
+																				<span>{poll.votes[answerIndex]} votes</span>
+																			</div>
+																			<div className="w-full bg-muted rounded-full h-2.5">
+																				<div
+																					className="bg-primary h-2.5 rounded-full transition-all duration-500"
+																					style={{
+																						width: `${getVotePercentage(
+																							poll.votes[answerIndex],
+																							getTotalVotes(poll)
+																						)}%`,
+																					}}
+																				/>
+																			</div>
+																		</>
+																	)}
+																</div>
+															))}
+															<p className="text-sm text-muted-foreground">
+																Total votes: {getTotalVotes(poll)}
+															</p>
+															<div className="mt-4 h-10">
+																{!hasUserVoted[poll.id] && (
+																	<Button
+																		onClick={() => handleVote(poll.id)}
+																		disabled={selectedOption === null}
+																		className="w-full"
+																	>
+																		Vote
+																	</Button>
+																)}
+															</div>
+														</section>
+													</AlertDialogDescription>
+
+													{isAdmin && (
+														<div className="border-t pt-4">
+															<div className="flex justify-between items-center">
+																<h3 className="font-semibold text-sm">Poll Management</h3>
+																<div className="flex gap-2">
+																	<AlertDialog>
+																		<AlertDialogTrigger asChild>
+																			<Button variant="destructive" size="sm">
+																				Delete Poll
+																			</Button>
+																		</AlertDialogTrigger>
+																		<AlertDialogContent>
+																			<AlertDialogHeader>
+																				<AlertDialogTitle>Remove Poll</AlertDialogTitle>
+																				<AlertDialogDescription>
+																					It is not recommended to remove polls as it will not save
+																					the votes. Try to hide it instead.
+																				</AlertDialogDescription>
+																			</AlertDialogHeader>
+																			<AlertDialogFooter>
+																				<AlertDialogCancel>Cancel</AlertDialogCancel>
+																				<Button
+																					variant="destructive"
+																					onClick={async () => {
+																						try {
+																							await deletePoll(poll.id)
+																							setPolls(polls.filter(p => p.id !== poll.id))
+																							toast.success('Poll deleted successfully')
+																							if (
+																								activeTab === index.toString() &&
+																								displayedPolls.length > 1
+																							) {
+																								setActiveTab('0')
+																							}
+																						} catch (error) {
+																							console.error('Failed to delete poll:', error)
+																							toast.error('Failed to delete poll')
+																						}
+																					}}
+																				>
+																					Delete
+																				</Button>
+																			</AlertDialogFooter>
+																		</AlertDialogContent>
+																	</AlertDialog>
+																	<Button
+																		variant="outline"
+																		size="sm"
+																		onClick={() => handleToggleVisibility(poll.id, !poll.visible)}
+																	>
+																		{poll.visible ? 'Hide Poll' : 'Show Poll'}
+																	</Button>
+																</div>
+															</div>
+														</div>
+													)}
+												</div>
+											</TabsContent>
+										))
+									)}
+								</div>
+							</div>
+						</div>
+					</Tabs>
+
+					<div className="w-full lg:hidden space-y-4">
+						<select
+							value={activeTab}
+							onChange={e => setActiveTab(e.target.value)}
+							className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+						>
+							{displayedPolls.map((poll, index) => (
+								<option key={poll.id} value={index.toString()}>
+									{poll.question}
+								</option>
+							))}
+						</select>
+
+						<div className="border rounded-lg p-4">
 							{isLoading ? (
-								<TabsContent value="0" className="p-4 text-center">
+								<div className="px-4 py-3">
 									<div className="space-y-4">
 										<Skeleton className="h-8 w-3/4" />
 										<div className="space-y-4">
@@ -206,59 +371,157 @@ export default function Poll() {
 											))}
 										</div>
 									</div>
-								</TabsContent>
+								</div>
 							) : (
 								displayedPolls.map((poll, index) => (
-									<TabsContent
+									<div
 										key={poll.id}
-										value={index.toString()}
-										className="py-4 text-center"
+										className={`px-4 py-3 ${
+											activeTab === index.toString() ? 'block' : 'hidden'
+										}`}
 									>
-										<PollContent
-											poll={poll}
-											hasVoted={hasUserVoted[poll.id]}
-											selectedOption={selectedOption}
-											setSelectedOption={setSelectedOption}
-											onVote={() => handleVote(poll.id)}
-											getTotalVotes={getTotalVotes}
-											getVotePercentage={getVotePercentage}
-										/>
-										{isAdmin && (
-											<div className="mt-4 pt-4 border-t">
-												<div className="flex justify-between items-center">
-													<h3 className="font-semibold text-sm">Poll Management</h3>
-													<Button
-														variant="outline"
-														size="sm"
-														onClick={() => handleToggleVisibility(poll.id, !poll.visible)}
-													>
-														{poll.visible ? 'Hide Poll' : 'Show Poll'}
-													</Button>
+										<div className="space-y-6">
+											<AlertDialogDescription asChild>
+												<section className="space-y-4">
+													<h2 className="text-lg font-semibold break-all text-black dark:text-white">
+														{poll.question}
+													</h2>
+													{hasUserVoted[poll.id] && (
+														<p className="text-sm text-blue-500">Thank you for voting!</p>
+													)}
+													{poll.answers.map((answer: string, answerIndex: number) => (
+														<div key={answerIndex} className="space-y-2">
+															{!hasUserVoted[poll.id] ? (
+																<RadioGroup
+																	value={selectedOption?.toString()}
+																	onValueChange={value => setSelectedOption(Number(value))}
+																	className="gap-2 w-full"
+																>
+																	<div className="border-input hover:bg-accent hover:text-accent-foreground has-[data-state=checked]:border-primary/50 relative flex w-full items-start rounded-md border p-4 shadow-sm outline-none">
+																		<RadioGroupItem
+																			value={answerIndex.toString()}
+																			id={`option-${poll.id}-${answerIndex}`}
+																			className="order-1 after:absolute after:inset-0"
+																		/>
+																		<div className="grid grow gap-2">
+																			<span className="text-sm text-foreground">{answer}</span>
+																		</div>
+																	</div>
+																</RadioGroup>
+															) : (
+																<>
+																	<div className="flex justify-between items-center gap-2 text-sm text-foreground">
+																		<span>{answer}</span>
+																		<span>{poll.votes[answerIndex]} votes</span>
+																	</div>
+																	<div className="w-full bg-muted rounded-full h-2.5">
+																		<div
+																			className="bg-primary h-2.5 rounded-full transition-all duration-500"
+																			style={{
+																				width: `${getVotePercentage(
+																					poll.votes[answerIndex],
+																					getTotalVotes(poll)
+																				)}%`,
+																			}}
+																		/>
+																	</div>
+																</>
+															)}
+														</div>
+													))}
+													<p className="text-sm text-muted-foreground">
+														Total votes: {getTotalVotes(poll)}
+													</p>
+													<div className="mt-4 h-10">
+														{!hasUserVoted[poll.id] && (
+															<Button
+																onClick={() => handleVote(poll.id)}
+																disabled={selectedOption === null}
+																className="w-full"
+															>
+																Vote
+															</Button>
+														)}
+													</div>
+												</section>
+											</AlertDialogDescription>
+
+											{isAdmin && (
+												<div className="border-t pt-4">
+													<div className="flex justify-between items-center">
+														<h3 className="font-semibold text-sm">Poll Management</h3>
+														<div className="flex gap-2">
+															<AlertDialog>
+																<AlertDialogTrigger asChild>
+																	<Button variant="destructive" size="sm">
+																		Delete Poll
+																	</Button>
+																</AlertDialogTrigger>
+																<AlertDialogContent>
+																	<AlertDialogHeader>
+																		<AlertDialogTitle>Remove Poll</AlertDialogTitle>
+																		<AlertDialogDescription>
+																			It is not recommended to remove polls as it will not save the
+																			votes. Try to hide it instead.
+																		</AlertDialogDescription>
+																	</AlertDialogHeader>
+																	<AlertDialogFooter>
+																		<AlertDialogCancel>Cancel</AlertDialogCancel>
+																		<Button
+																			variant="destructive"
+																			onClick={async () => {
+																				try {
+																					await deletePoll(poll.id)
+																					setPolls(polls.filter(p => p.id !== poll.id))
+																					toast.success('Poll deleted successfully')
+																					if (
+																						activeTab === index.toString() &&
+																						displayedPolls.length > 1
+																					) {
+																						setActiveTab('0')
+																					}
+																				} catch (error) {
+																					console.error('Failed to delete poll:', error)
+																					toast.error('Failed to delete poll')
+																				}
+																			}}
+																		>
+																			Delete
+																		</Button>
+																	</AlertDialogFooter>
+																</AlertDialogContent>
+															</AlertDialog>
+															<Button
+																variant="outline"
+																size="sm"
+																onClick={() => handleToggleVisibility(poll.id, !poll.visible)}
+															>
+																{poll.visible ? 'Hide Poll' : 'Show Poll'}
+															</Button>
+														</div>
+													</div>
 												</div>
-											</div>
-										)}
-									</TabsContent>
+											)}
+										</div>
+									</div>
 								))
 							)}
-							<ScrollBar orientation="horizontal" />
-						</ScrollArea>
-						{isAdmin && (
-							<TabsContent value="create" className="py-4 text-center">
+						</div>
+					</div>
+
+					{isAdmin && (
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button variant="outline" className="h-fit">
+									Create New Poll
+								</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
 								<AlertDialogHeader>
 									<AlertDialogTitle>Create New Poll</AlertDialogTitle>
 									<AlertDialogDescription asChild>
 										<div className="space-y-4">
-											<AlertDialogCancel asChild>
-												<Button
-													variant="ghost"
-													size="icon"
-													className="absolute top-4 right-4 z-50 border-none"
-													onClick={() => setSelectedOption(null)}
-												>
-													<X className="size-4" />
-												</Button>
-											</AlertDialogCancel>
-											<div className="text-black dark:text-white">
+											<div className="text-foreground">
 												<label className="block text-sm font-medium mb-1">Question</label>
 												<Input
 													type="text"
@@ -297,7 +560,7 @@ export default function Poll() {
 																	}))
 																}
 															>
-																<X />
+																<X className="size-4" />
 															</Button>
 														)}
 													</div>
@@ -314,118 +577,26 @@ export default function Poll() {
 												>
 													Add Answer Option
 												</Button>
-											</div>{' '}
-											<Button
-												onClick={handleCreatePoll}
-												disabled={
-													!newPoll.question || newPoll.answers.some(a => !a) || isCreating
-												}
-												className="w-full"
-											>
-												{isCreating ? 'Creating...' : 'Create Poll'}
-											</Button>
+											</div>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<Button
+													onClick={handleCreatePoll}
+													disabled={
+														!newPoll.question || newPoll.answers.some(a => !a) || isCreating
+													}
+												>
+													{isCreating ? 'Creating...' : 'Create Poll'}
+												</Button>
+											</AlertDialogFooter>
 										</div>
 									</AlertDialogDescription>
 								</AlertDialogHeader>
-							</TabsContent>
-						)}
-					</Tabs>
+							</AlertDialogContent>
+						</AlertDialog>
+					)}
 				</AlertDialogContent>
 			</AlertDialog>
 		</div>
-	)
-}
-
-function PollContent({
-	poll,
-	hasVoted,
-	selectedOption,
-	setSelectedOption,
-	onVote,
-	getTotalVotes,
-	getVotePercentage,
-}: {
-	poll: Polls
-	hasVoted: boolean
-	selectedOption: number | null
-	setSelectedOption: (index: number | null) => void
-	onVote: () => void
-	getTotalVotes: (poll: Polls) => number
-	getVotePercentage: (votes: number, totalVotes: number) => number
-}) {
-	const totalVotes = getTotalVotes(poll)
-
-	return (
-		<>
-			<AlertDialogHeader>
-				<AlertDialogTitle>{poll.question}</AlertDialogTitle>
-				<AlertDialogDescription asChild>
-					<section className="space-y-4">
-						{hasVoted && (
-							<p className="mb-4 text-sm text-blue-500">Thank you for voting!</p>
-						)}
-						{poll.answers.map((answer: string, index: number) => (
-							<div key={index} className="space-y-2">
-								<div className="flex items-center justify-between">
-									<div className="flex items-center gap-2 flex-1">
-										{!hasVoted ? (
-											<RadioGroup
-												value={selectedOption?.toString()}
-												onValueChange={value => setSelectedOption(Number(value))}
-												className="gap-2 w-full"
-											>
-												<div className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start rounded-md border p-4 shadow-xs outline-none">
-													<RadioGroupItem
-														value={index.toString()}
-														id={`option-${poll.id}-${index}`}
-														className="order-1 after:absolute after:inset-0"
-													/>
-													<div className="grid grow gap-2">
-														<span className="text-sm">{answer}</span>
-													</div>
-												</div>
-											</RadioGroup>
-										) : (
-											<div className="flex justify-between items-center gap-2">
-												<span className="text-sm">{answer}</span>
-												<span className="text-sm">{poll.votes[index]} votes</span>
-											</div>
-										)}
-									</div>
-								</div>
-								{hasVoted && (
-									<div className="w-full bg-muted rounded-full h-2.5">
-										<div
-											className="bg-primary h-2.5 rounded-full transition-all duration-500"
-											style={{
-												width: `${getVotePercentage(poll.votes[index], totalVotes)}%`,
-											}}
-										/>
-									</div>
-								)}
-							</div>
-						))}
-						<p className="text-sm mt-2">Total votes: {totalVotes}</p>
-					</section>
-				</AlertDialogDescription>
-			</AlertDialogHeader>
-			<AlertDialogFooter>
-				<AlertDialogCancel asChild>
-					<Button
-						variant="ghost"
-						size="icon"
-						className="absolute top-4 right-4 z-50 border-none"
-						onClick={() => setSelectedOption(null)}
-					>
-						<X className="size-4" />
-					</Button>
-				</AlertDialogCancel>
-				{!hasVoted && (
-					<Button onClick={onVote} disabled={selectedOption === null}>
-						Vote
-					</Button>
-				)}
-			</AlertDialogFooter>
-		</>
 	)
 }
