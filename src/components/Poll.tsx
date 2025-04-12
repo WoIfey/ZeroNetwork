@@ -28,7 +28,9 @@ import { Skeleton } from './ui/skeleton'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { getVisitorId } from '@/lib/fingerprint'
 
-const LOCAL_STORAGE_KEY = 'poll_votes'
+const local_storage_key = 'poll_votes'
+const max_questions = 250
+const max_answers = 10
 
 export default function Poll() {
 	const { data: session } = authClient.useSession()
@@ -72,9 +74,9 @@ export default function Poll() {
 
 	const recordLocalVote = (pollId: number) => {
 		try {
-			const votes = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}')
+			const votes = JSON.parse(localStorage.getItem(local_storage_key) || '{}')
 			votes[pollId] = true
-			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(votes))
+			localStorage.setItem(local_storage_key, JSON.stringify(votes))
 		} catch (error) {
 			console.error('Failed to save vote to local storage:', error)
 		}
@@ -216,7 +218,7 @@ export default function Poll() {
 												<div className="space-y-6">
 													<AlertDialogDescription asChild>
 														<section className="space-y-4">
-															<h2 className="text-lg font-semibold break-all text-black dark:text-white">
+															<h2 className="text-lg font-semibold [overflow-wrap:anywhere] text-black dark:text-white">
 																{poll.question}
 															</h2>
 															{hasUserVoted[poll.id] && (
@@ -237,7 +239,9 @@ export default function Poll() {
 																					className="order-1 after:absolute after:inset-0"
 																				/>
 																				<div className="grid grow gap-2">
-																					<span className="text-sm text-foreground">{answer}</span>
+																					<span className="text-sm text-foreground [overflow-wrap:anywhere]">
+																						{answer}
+																					</span>
 																				</div>
 																			</div>
 																		</RadioGroup>
@@ -526,10 +530,12 @@ export default function Poll() {
 												<Input
 													type="text"
 													value={newPoll.question}
-													onChange={e =>
-														setNewPoll(prev => ({ ...prev, question: e.target.value }))
-													}
+													onChange={e => {
+														const value = e.target.value.slice(0, max_questions)
+														setNewPoll(prev => ({ ...prev, question: value }))
+													}}
 													placeholder="Enter your question"
+													maxLength={max_questions}
 												/>
 											</div>
 											<div className="space-y-2 text-black dark:text-white">
@@ -548,6 +554,7 @@ export default function Poll() {
 																}))
 															}
 															placeholder={`Answer ${i + 1}`}
+															maxLength={max_questions}
 														/>
 														{newPoll.answers.length > 2 && (
 															<Button
@@ -574,8 +581,9 @@ export default function Poll() {
 													}
 													variant="outline"
 													className="w-full"
+													disabled={newPoll.answers.length >= max_answers}
 												>
-													Add Answer Option
+													Add Answer Option ({newPoll.answers.length}/{max_answers})
 												</Button>
 											</div>
 											<AlertDialogFooter>
