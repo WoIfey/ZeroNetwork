@@ -159,9 +159,9 @@ export default function Poll() {
 						Vote on Polls
 					</Button>
 				</AlertDialogTrigger>
-				<AlertDialogContent className="max-w-2xl">
+				<AlertDialogContent className="max-w-2xl p-4">
 					<AlertDialogTitle className="hidden" />
-					<AlertDialogCancel className="absolute top-2 left-2 z-50 p-3 border-none bg-transparent">
+					<AlertDialogCancel className="hidden lg:block absolute top-2 left-2 z-50 p-3 border-none bg-transparent">
 						<X />
 					</AlertDialogCancel>
 					<Tabs
@@ -187,7 +187,15 @@ export default function Poll() {
 											value={index.toString()}
 											className="data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
 										>
-											Poll {index + 1}
+											{poll.question.length > 20
+												? `${poll.question.slice(0, 20)}...`
+												: poll.question}
+											{isAdmin &&
+												(poll.visible ? (
+													<span className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-green-500 h-2 w-2" />
+												) : (
+													<span className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-red-500 h-2 w-2" />
+												))}
 										</TabsTrigger>
 									))
 								)}
@@ -210,11 +218,7 @@ export default function Poll() {
 										</TabsContent>
 									) : (
 										displayedPolls.map((poll, index) => (
-											<TabsContent
-												key={poll.id}
-												value={index.toString()}
-												className="px-4 py-3"
-											>
+											<TabsContent key={poll.id} value={index.toString()} className="p-2">
 												<div className="space-y-6">
 													<AlertDialogDescription asChild>
 														<section className="space-y-4">
@@ -247,9 +251,11 @@ export default function Poll() {
 																		</RadioGroup>
 																	) : (
 																		<>
-																			<div className="flex justify-between items-center gap-2 text-sm text-foreground">
+																			<div className="flex justify-between items-baseline gap-2 text-sm text-foreground">
 																				<span>{answer}</span>
-																				<span>{poll.votes[answerIndex]} votes</span>
+																				<span className="whitespace-nowrap">
+																					{poll.votes[answerIndex]} votes
+																				</span>
 																			</div>
 																			<div className="w-full bg-muted rounded-full h-2.5">
 																				<div
@@ -349,17 +355,22 @@ export default function Poll() {
 					</Tabs>
 
 					<div className="w-full lg:hidden space-y-4">
-						<select
-							value={activeTab}
-							onChange={e => setActiveTab(e.target.value)}
-							className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
-						>
-							{displayedPolls.map((poll, index) => (
-								<option key={poll.id} value={index.toString()}>
-									{poll.question}
-								</option>
-							))}
-						</select>
+						<div className="flex items-center gap-2">
+							<AlertDialogCancel className="z-50 p-3 mt-0 border-none bg-transparent">
+								<X />
+							</AlertDialogCancel>
+							<select
+								value={activeTab}
+								onChange={e => setActiveTab(e.target.value)}
+								className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+							>
+								{displayedPolls.map((poll, index) => (
+									<option key={poll.id} value={index.toString()}>
+										{poll.question}
+									</option>
+								))}
+							</select>
+						</div>
 
 						<div className="border rounded-lg p-4">
 							{isLoading ? (
@@ -380,14 +391,14 @@ export default function Poll() {
 								displayedPolls.map((poll, index) => (
 									<div
 										key={poll.id}
-										className={`px-4 py-3 ${
+										className={`p-1 ${
 											activeTab === index.toString() ? 'block' : 'hidden'
 										}`}
 									>
 										<div className="space-y-6">
 											<AlertDialogDescription asChild>
 												<section className="space-y-4">
-													<h2 className="text-lg font-semibold break-all text-black dark:text-white">
+													<h2 className="text-lg font-semibold [overflow-wrap:anywhere] text-black dark:text-white">
 														{poll.question}
 													</h2>
 													{hasUserVoted[poll.id] && (
@@ -416,7 +427,9 @@ export default function Poll() {
 																<>
 																	<div className="flex justify-between items-center gap-2 text-sm text-foreground">
 																		<span>{answer}</span>
-																		<span>{poll.votes[answerIndex]} votes</span>
+																		<span className="whitespace-nowrap">
+																			{poll.votes[answerIndex]} votes
+																		</span>
 																	</div>
 																	<div className="w-full bg-muted rounded-full h-2.5">
 																		<div
