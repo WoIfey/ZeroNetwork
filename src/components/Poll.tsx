@@ -26,6 +26,7 @@ import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { Input } from './ui/input'
 import { Skeleton } from './ui/skeleton'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { getVisitorId } from '@/lib/fingerprint'
 
 export default function Poll() {
@@ -174,9 +175,6 @@ export default function Poll() {
 				</AlertDialogTrigger>
 				<AlertDialogContent className="max-w-2xl p-4">
 					<AlertDialogTitle className="hidden" />
-					<AlertDialogCancel className="hidden lg:block absolute top-2 left-2 z-50 p-3 border-none bg-transparent">
-						<X />
-					</AlertDialogCancel>{' '}
 					<Tabs
 						value={activeTab}
 						onValueChange={setActiveTab}
@@ -184,42 +182,65 @@ export default function Poll() {
 						className="w-full hidden lg:flex"
 					>
 						<div className="flex gap-4 min-h-[350px] w-full">
-							<TabsList className="flex-col rounded-none border-r bg-transparent p-0 min-w-32 max-w-48">
-								{isLoading ? (
-									<TabsTrigger
-										value="0"
-										disabled
-										className="data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+							<ScrollArea className="min-w-32 max-w-48 h-[450px] py-10">
+								<AlertDialogCancel className="hidden lg:block z-50 absolute top-0 left-0 p-2 h-8 border-none bg-transparent">
+									<X />
+								</AlertDialogCancel>
+								<div className="absolute bottom-0 flex justify-center items-center w-full gap-2">
+									<Button
+										variant="outline"
+										onClick={() => handleNavigation('prev')}
+										disabled={parseInt(activeTab) === 0}
+										className="w-full"
 									>
-										<Skeleton className="h-4 w-16" />
-									</TabsTrigger>
-								) : (
-									displayedPolls.map((poll, index) => (
+										<ArrowLeft />
+									</Button>
+									<Button
+										variant="outline"
+										onClick={() => handleNavigation('next')}
+										disabled={parseInt(activeTab) === displayedPolls.length - 1}
+										className="w-full"
+									>
+										<ArrowRight />
+									</Button>
+								</div>
+								<TabsList className="flex-col rounded-none border-r bg-transparent p-0 min-w-32 max-w-48">
+									{isLoading ? (
 										<TabsTrigger
-											key={poll.id}
-											value={index.toString()}
+											value="0"
+											disabled
 											className="data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
 										>
-											{poll.question.length > 20
-												? `${poll.question.slice(0, 20)}...`
-												: poll.question}
-											{isAdmin ? (
-												poll.visible ? (
-													<span className="absolute -left-1 top-1/2 -translate-y-1/2 rounded-full bg-green-500 h-2 w-2" />
-												) : (
-													<span className="absolute -left-1 top-1/2 -translate-y-1/2 rounded-full bg-red-500 h-2 w-2" />
-												)
-											) : (
-												!hasUserVoted[poll.id] && (
-													<span className="absolute -left-1 top-1/2 -translate-y-1/2 rounded-full bg-blue-500 h-2 w-2" />
-												)
-											)}
+											<Skeleton className="h-4 w-16" />
 										</TabsTrigger>
-									))
-								)}
-							</TabsList>
+									) : (
+										displayedPolls.map((poll, index) => (
+											<TabsTrigger
+												key={poll.id}
+												value={index.toString()}
+												className="px-5 data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+											>
+												{poll.question.length > 20
+													? `${poll.question.slice(0, 20)}...`
+													: poll.question}
+												{isAdmin ? (
+													poll.visible ? (
+														<span className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full bg-green-500 h-2 w-2" />
+													) : (
+														<span className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full bg-red-500 h-2 w-2" />
+													)
+												) : (
+													!hasUserVoted[poll.id] && (
+														<span className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full bg-blue-500 h-2 w-2" />
+													)
+												)}
+											</TabsTrigger>
+										))
+									)}
+								</TabsList>
+							</ScrollArea>
 							<div className="flex-1">
-								<div className="border rounded-lg p-4 h-full w-full">
+								<ScrollArea className="border rounded-lg p-3 h-[450px] w-full">
 									{isLoading ? (
 										<TabsContent value="0" className="px-4 py-3">
 											<div className="space-y-4">
@@ -290,9 +311,6 @@ export default function Poll() {
 																	)}
 																</div>
 															))}
-															<p className="text-sm text-muted-foreground">
-																Total votes: {getTotalVotes(poll)}
-															</p>
 															<div className="mt-4 space-y-4">
 																{!hasUserVoted[poll.id] && (
 																	<Button
@@ -303,23 +321,10 @@ export default function Poll() {
 																		Vote
 																	</Button>
 																)}
-																<div className="flex justify-between gap-2">
-																	<Button
-																		variant="outline"
-																		onClick={() => handleNavigation('prev')}
-																		disabled={parseInt(activeTab) === 0}
-																	>
-																		<ArrowLeft />
-																	</Button>
-																	<Button
-																		variant="outline"
-																		onClick={() => handleNavigation('next')}
-																		disabled={parseInt(activeTab) === displayedPolls.length - 1}
-																	>
-																		<ArrowRight />
-																	</Button>
-																</div>
 															</div>
+															<p className="text-sm text-muted-foreground">
+																Total votes: {getTotalVotes(poll)}
+															</p>
 														</section>
 													</AlertDialogDescription>
 
@@ -383,7 +388,7 @@ export default function Poll() {
 											</TabsContent>
 										))
 									)}
-								</div>
+								</ScrollArea>
 							</div>
 						</div>
 					</Tabs>
@@ -392,20 +397,35 @@ export default function Poll() {
 							<AlertDialogCancel className="z-50 p-3 mt-0 border-none bg-transparent">
 								<X />
 							</AlertDialogCancel>
-							<select
-								value={activeTab}
-								onChange={e => setActiveTab(e.target.value)}
-								className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
-							>
-								{displayedPolls.map((poll, index) => (
-									<option key={poll.id} value={index.toString()}>
-										{poll.question}
-									</option>
-								))}
-							</select>
+							<div className="flex justify-between gap-2">
+								<Button
+									variant="outline"
+									onClick={() => handleNavigation('prev')}
+									disabled={parseInt(activeTab) === 0}
+								>
+									<ArrowLeft />
+								</Button>
+								<select
+									value={activeTab}
+									onChange={e => setActiveTab(e.target.value)}
+									className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+								>
+									{displayedPolls.map((poll, index) => (
+										<option key={poll.id} value={index.toString()}>
+											{poll.question}
+										</option>
+									))}
+								</select>
+								<Button
+									variant="outline"
+									onClick={() => handleNavigation('next')}
+									disabled={parseInt(activeTab) === displayedPolls.length - 1}
+								>
+									<ArrowRight />
+								</Button>
+							</div>
 						</div>
-
-						<div className="border rounded-lg p-4">
+						<ScrollArea className="border rounded-lg p-4 h-[350px]">
 							{isLoading ? (
 								<div className="px-4 py-3">
 									<div className="space-y-4">
@@ -479,9 +499,6 @@ export default function Poll() {
 															)}
 														</div>
 													))}
-													<p className="text-sm text-muted-foreground">
-														Total votes: {getTotalVotes(poll)}
-													</p>
 													<div className="mt-4 space-y-4">
 														{!hasUserVoted[poll.id] && (
 															<Button
@@ -492,23 +509,10 @@ export default function Poll() {
 																Vote
 															</Button>
 														)}
-														<div className="flex justify-between gap-2">
-															<Button
-																variant="outline"
-																onClick={() => handleNavigation('prev')}
-																disabled={parseInt(activeTab) === 0}
-															>
-																<ArrowLeft />
-															</Button>
-															<Button
-																variant="outline"
-																onClick={() => handleNavigation('next')}
-																disabled={parseInt(activeTab) === displayedPolls.length - 1}
-															>
-																<ArrowRight />
-															</Button>
-														</div>
 													</div>
+													<p className="text-sm text-muted-foreground">
+														Total votes: {getTotalVotes(poll)}
+													</p>
 												</section>
 											</AlertDialogDescription>
 
@@ -572,7 +576,7 @@ export default function Poll() {
 									</div>
 								))
 							)}
-						</div>
+						</ScrollArea>
 					</div>
 					{isAdmin && (
 						<AlertDialog>
