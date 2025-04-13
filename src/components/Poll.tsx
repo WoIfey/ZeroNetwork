@@ -182,10 +182,10 @@ export default function Poll() {
 						className="w-full hidden lg:flex"
 					>
 						<div className="flex gap-4 min-h-[350px] w-full">
-							<ScrollArea className="min-w-32 max-w-48 h-[450px] py-10">
-								<AlertDialogCancel className="hidden lg:block z-50 absolute top-0 left-0 p-2 h-8 border-none bg-transparent">
-									<X />
-								</AlertDialogCancel>
+							<AlertDialogCancel className="hidden lg:block z-50 absolute top-3 left-3 p-2 h-8 border-none bg-transparent">
+								<X />
+							</AlertDialogCancel>
+							<ScrollArea className="min-w-32 max-w-48 h-[450px] pt-6 pb-10">
 								<div className="absolute bottom-0 flex justify-center items-center w-full gap-2">
 									<Button
 										variant="outline"
@@ -218,7 +218,9 @@ export default function Poll() {
 											<TabsTrigger
 												key={poll.id}
 												value={index.toString()}
-												className="px-5 data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+												className={`${
+													isAdmin ? 'px-4' : hasUserVoted[poll.id] ? 'px-0' : 'px-4'
+												} data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none`}
 											>
 												{poll.question.length > 20
 													? `${poll.question.slice(0, 20)}...`
@@ -257,7 +259,11 @@ export default function Poll() {
 										</TabsContent>
 									) : (
 										displayedPolls.map((poll, index) => (
-											<TabsContent key={poll.id} value={index.toString()} className="p-2">
+											<TabsContent
+												key={poll.id}
+												value={index.toString()}
+												className="p-2 mt-0"
+											>
 												<div className="space-y-6">
 													<AlertDialogDescription asChild>
 														<section className="space-y-4">
