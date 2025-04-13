@@ -42,7 +42,7 @@ export default function Description() {
 					<h2 className="font-syne text-4xl font-bold tracking-tight sm:text-5xl">
 						What are we doing?!
 					</h2>
-					<div className="mt-6 text-xl text-gray-600 dark:text-gray-300">
+					<div className="mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-300">
 						<p>We run Minecraft servers with lots of fun features for everyone.</p>
 						<p className="mt-4">
 							Whether you like modded or vanilla Minecraft, we&apos;ve got something
@@ -55,7 +55,7 @@ export default function Description() {
 					{facts.map((fact, index) => (
 						<motion.div
 							key={fact.name}
-							className="relative rounded-xl bg-gradient-to-b from-gray-50/20 to-gray-900/10 dark:from-gray-50/10 dark:to-gray-900/20 p-8"
+							className="relative rounded-xl bg-gradient-to-r from-gray-200/20 to-gray-900/10 dark:from-gray-500/10 dark:to-gray-900/20 p-8"
 							initial={{ opacity: 0, y: 20 }}
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true }}

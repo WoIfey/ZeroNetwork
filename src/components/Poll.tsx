@@ -22,17 +22,16 @@ import {
 	togglePollVisibility,
 	deletePoll,
 } from '@/actions/poll'
-import { X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { Input } from './ui/input'
 import { Skeleton } from './ui/skeleton'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { getVisitorId } from '@/lib/fingerprint'
 
-const local_storage_key = 'poll_votes'
-const max_questions = 250
-const max_answers = 10
-
 export default function Poll() {
+	const local_storage_key = 'poll_votes'
+	const max_questions = 250
+	const max_answers = 10
 	const { data: session } = authClient.useSession()
 	const [selectedOption, setSelectedOption] = useState<number | null>(null)
 	const [hasUserVoted, setHasUserVoted] = useState<Record<number, boolean>>({})
@@ -43,6 +42,20 @@ export default function Poll() {
 	const [isCreating, setIsCreating] = useState(false)
 	const [fingerprint, setFingerprint] = useState<string>('')
 	const isAdmin = session?.user?.role === 'admin'
+	const handleNavigation = (direction: 'next' | 'prev') => {
+		const currentIndex = parseInt(activeTab)
+		const visiblePolls = isAdmin ? polls : polls.filter(p => p.visible)
+
+		if (direction === 'next' && currentIndex < visiblePolls.length - 1) {
+			const newIndex = (currentIndex + 1).toString()
+			setActiveTab(newIndex)
+			setSelectedOption(null)
+		} else if (direction === 'prev' && currentIndex > 0) {
+			const newIndex = (currentIndex - 1).toString()
+			setActiveTab(newIndex)
+			setSelectedOption(null)
+		}
+	}
 
 	useEffect(() => {
 		getVisitorId().then(setFingerprint)
@@ -163,9 +176,9 @@ export default function Poll() {
 					<AlertDialogTitle className="hidden" />
 					<AlertDialogCancel className="hidden lg:block absolute top-2 left-2 z-50 p-3 border-none bg-transparent">
 						<X />
-					</AlertDialogCancel>
+					</AlertDialogCancel>{' '}
 					<Tabs
-						defaultValue={activeTab}
+						value={activeTab}
 						onValueChange={setActiveTab}
 						orientation="vertical"
 						className="w-full hidden lg:flex"
@@ -190,12 +203,17 @@ export default function Poll() {
 											{poll.question.length > 20
 												? `${poll.question.slice(0, 20)}...`
 												: poll.question}
-											{isAdmin &&
-												(poll.visible ? (
-													<span className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-green-500 h-2 w-2" />
+											{isAdmin ? (
+												poll.visible ? (
+													<span className="absolute -left-1 top-1/2 -translate-y-1/2 rounded-full bg-green-500 h-2 w-2" />
 												) : (
-													<span className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-red-500 h-2 w-2" />
-												))}
+													<span className="absolute -left-1 top-1/2 -translate-y-1/2 rounded-full bg-red-500 h-2 w-2" />
+												)
+											) : (
+												!hasUserVoted[poll.id] && (
+													<span className="absolute -left-1 top-1/2 -translate-y-1/2 rounded-full bg-blue-500 h-2 w-2" />
+												)
+											)}
 										</TabsTrigger>
 									))
 								)}
@@ -275,7 +293,7 @@ export default function Poll() {
 															<p className="text-sm text-muted-foreground">
 																Total votes: {getTotalVotes(poll)}
 															</p>
-															<div className="mt-4 h-10">
+															<div className="mt-4 space-y-4">
 																{!hasUserVoted[poll.id] && (
 																	<Button
 																		onClick={() => handleVote(poll.id)}
@@ -285,18 +303,33 @@ export default function Poll() {
 																		Vote
 																	</Button>
 																)}
+																<div className="flex justify-between gap-2">
+																	<Button
+																		variant="outline"
+																		onClick={() => handleNavigation('prev')}
+																		disabled={parseInt(activeTab) === 0}
+																	>
+																		<ArrowLeft />
+																	</Button>
+																	<Button
+																		variant="outline"
+																		onClick={() => handleNavigation('next')}
+																		disabled={parseInt(activeTab) === displayedPolls.length - 1}
+																	>
+																		<ArrowRight />
+																	</Button>
+																</div>
 															</div>
 														</section>
 													</AlertDialogDescription>
 
 													{isAdmin && (
 														<div className="border-t pt-4">
-															<div className="flex justify-between items-center">
-																<h3 className="font-semibold text-sm">Poll Management</h3>
-																<div className="flex gap-2">
+															<div className="flex justify-center items-center">
+																<div className="flex gap-2 w-full">
 																	<AlertDialog>
 																		<AlertDialogTrigger asChild>
-																			<Button variant="destructive" size="sm">
+																			<Button variant="destructive" size="sm" className="w-full">
 																				Delete Poll
 																			</Button>
 																		</AlertDialogTrigger>
@@ -338,6 +371,7 @@ export default function Poll() {
 																		variant="outline"
 																		size="sm"
 																		onClick={() => handleToggleVisibility(poll.id, !poll.visible)}
+																		className="w-full"
 																	>
 																		{poll.visible ? 'Hide Poll' : 'Show Poll'}
 																	</Button>
@@ -353,7 +387,6 @@ export default function Poll() {
 							</div>
 						</div>
 					</Tabs>
-
 					<div className="w-full lg:hidden space-y-4">
 						<div className="flex items-center gap-2">
 							<AlertDialogCancel className="z-50 p-3 mt-0 border-none bg-transparent">
@@ -449,7 +482,7 @@ export default function Poll() {
 													<p className="text-sm text-muted-foreground">
 														Total votes: {getTotalVotes(poll)}
 													</p>
-													<div className="mt-4 h-10">
+													<div className="mt-4 space-y-4">
 														{!hasUserVoted[poll.id] && (
 															<Button
 																onClick={() => handleVote(poll.id)}
@@ -459,6 +492,22 @@ export default function Poll() {
 																Vote
 															</Button>
 														)}
+														<div className="flex justify-between gap-2">
+															<Button
+																variant="outline"
+																onClick={() => handleNavigation('prev')}
+																disabled={parseInt(activeTab) === 0}
+															>
+																<ArrowLeft />
+															</Button>
+															<Button
+																variant="outline"
+																onClick={() => handleNavigation('next')}
+																disabled={parseInt(activeTab) === displayedPolls.length - 1}
+															>
+																<ArrowRight />
+															</Button>
+														</div>
 													</div>
 												</section>
 											</AlertDialogDescription>
@@ -466,11 +515,10 @@ export default function Poll() {
 											{isAdmin && (
 												<div className="border-t pt-4">
 													<div className="flex justify-between items-center">
-														<h3 className="font-semibold text-sm">Poll Management</h3>
-														<div className="flex gap-2">
+														<div className="flex gap-2 w-full">
 															<AlertDialog>
 																<AlertDialogTrigger asChild>
-																	<Button variant="destructive" size="sm">
+																	<Button variant="destructive" size="sm" className="w-full">
 																		Delete Poll
 																	</Button>
 																</AlertDialogTrigger>
@@ -512,6 +560,7 @@ export default function Poll() {
 																variant="outline"
 																size="sm"
 																onClick={() => handleToggleVisibility(poll.id, !poll.visible)}
+																className="w-full"
 															>
 																{poll.visible ? 'Hide Poll' : 'Show Poll'}
 															</Button>
@@ -525,7 +574,6 @@ export default function Poll() {
 							)}
 						</div>
 					</div>
-
 					{isAdmin && (
 						<AlertDialog>
 							<AlertDialogTrigger asChild>

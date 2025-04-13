@@ -251,14 +251,14 @@ export default function Header({ data }: ComponentProps) {
 
 	return (
 		<>
-			<header className="relative px-0 sm:px-6 lg:px-8 py-6 sm:py-24 overflow-hidden">
+			<header className="relative px-0 sm:px-6 lg:px-8 py-6 sm:py-24">
 				<div className="relative max-w-7xl mx-auto">
 					<div className="flex flex-col gap-8">
-						<div className="relative mx-auto">
+						<div className="relative mx-auto w-full">
 							<div className="relative flex items-center">
-								<div className="absolute inset-0 w-full h-full">
-									<div className="relative h-full flex items-center justify-between">
-										<div className="relative size-96 -ml-20 sm:-ml-32 xl:-ml-72 mb-24 xl:mb-0 animate-float">
+								<div className="absolute inset-0">
+									<div className="relative h-full flex items-center justify-between max-w-[100vw]">
+										<div className="relative size-72 sm:size-96 2xl:-translate-x-32 mt-52 2xl:mt-0 animate-float">
 											<Image
 												fill
 												src="https://wolfey.s-ul.eu/L2c6zc9c"
@@ -267,7 +267,7 @@ export default function Header({ data }: ComponentProps) {
 												priority
 											/>
 										</div>
-										<div className="relative size-96 -mr-20 sm:-mr-32 xl:-mr-64 mt-52 xl:mt-0 animate-float-delayed">
+										<div className="relative size-72 sm:size-96 2xl:translate-x-32 mt-52 2xl:mt-0 animate-float-delayed">
 											<Image
 												fill
 												src="https://wolfey.s-ul.eu/V8AxRMcD"
@@ -277,7 +277,7 @@ export default function Header({ data }: ComponentProps) {
 											/>
 										</div>
 									</div>
-								</div>{' '}
+								</div>
 								<div className="text-center relative z-10 w-full">
 									{isAdmin && (
 										<div className="flex justify-center gap-2 mb-2">
@@ -307,13 +307,14 @@ export default function Header({ data }: ComponentProps) {
 														defaultValue={alertText}
 														placeholder="Enter alert message"
 														triggerMode="dblclick"
+														dismissible={false}
 														onSubmit={handleAlertChange}
 														className="text-center"
 													>
 														<div className="flex items-center gap-2">
 															<Editable.Area>
 																<Editable.Preview />
-																<Editable.Input className="min-w-96" />
+																<Editable.Input />
 															</Editable.Area>
 															<Editable.Toolbar className="flex gap-2">
 																<Editable.Cancel asChild>
@@ -335,7 +336,7 @@ export default function Header({ data }: ComponentProps) {
 											</AlertDescription>
 										</Alert>
 									)}
-									<h1 className="font-syne text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-sky-400 via-violet-500 to-rose-400 bg-clip-text text-transparent">
+									<h1 className="font-syne text-4xl sm:text-4xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-sky-400 via-violet-500 to-rose-400 bg-clip-text text-transparent">
 										The Im Her Zero Network
 									</h1>
 									<p className="mt-2 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto">

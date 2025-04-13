@@ -26,7 +26,7 @@ const members = [
 export default function Team() {
 	return (
 		<div className="container mx-auto py-16 px-4">
-			<h2 className="text-center font-syne text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-12">
+			<h2 className="text-center font-syne text-4xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-12">
 				Meet the Team
 			</h2>
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto">
@@ -60,15 +60,13 @@ export default function Team() {
 							</h3>
 						</a>
 						<div className="flex items-center gap-2 mt-3">
-							<p className="text-base font-medium text-blue-600 dark:text-blue-500/90">
+							<p className="font-medium text-blue-600 dark:text-blue-500/90">
 								{member.role}
 							</p>
 							<span className="text-gray-400 dark:text-gray-500">•</span>
-							<p className="text-sm text-gray-800 dark:text-gray-300/90">
-								{member.location}
-							</p>
+							<p className="text-gray-800 dark:text-gray-300/90">{member.location}</p>
 						</div>
-						<p className="text-center text-gray-800 dark:text-gray-300/90 text-sm md:text-base mt-6 leading-relaxed max-w-lg">
+						<p className="text-center text-gray-800 dark:text-gray-300/90 text-base md:text-lg mt-6 leading-relaxed max-w-lg">
 							{member.description}
 						</p>
 					</motion.div>
