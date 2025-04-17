@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "client"
 }
 
 datasource db {
@@ -117,8 +118,10 @@ model Poll {
   answers   String[]
   votes     Int[]
   visible   Boolean    @default(false)
+  until     DateTime?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt
+  endedAt   DateTime?
   pollVotes PollVote[]
 
   @@map("poll")
