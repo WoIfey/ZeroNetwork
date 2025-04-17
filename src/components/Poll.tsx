@@ -366,7 +366,14 @@ export default function Poll() {
 												key={poll.id}
 												value={index.toString()}
 												className={`${
-													isAdmin ? 'px-4' : hasUserVoted[poll.id] ? 'px-0' : 'px-4'
+													isAdmin ||
+													hasUserVoted[poll.id] ||
+													poll.endedAt ||
+													(poll.until !== null &&
+														poll.until !== undefined &&
+														isPast(poll.until))
+														? 'px-0'
+														: 'px-4'
 												} data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none`}
 											>
 												{poll.question.length > 20
@@ -379,7 +386,9 @@ export default function Poll() {
 														<span className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full bg-red-500 h-2 w-2" />
 													)
 												) : (
-													!hasUserVoted[poll.id] && (
+													!hasUserVoted[poll.id] &&
+													!poll.endedAt &&
+													(!poll.until || !isPast(poll.until)) && (
 														<span className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full bg-blue-500 h-2 w-2" />
 													)
 												)}
