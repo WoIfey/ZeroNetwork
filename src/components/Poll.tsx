@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
+import { Calendar } from '@/components/ui/calendar'
+import { Switch } from '@/components/ui/switch'
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -21,6 +23,7 @@ import {
 	createNewPoll,
 	togglePollVisibility,
 	deletePoll,
+	endPoll,
 } from '@/actions/poll'
 import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { Input } from './ui/input'
@@ -28,6 +31,7 @@ import { Skeleton } from './ui/skeleton'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { getVisitorId } from '@/lib/fingerprint'
+import { isPast, format, isBefore } from 'date-fns'
 
 export default function Poll() {
 	const local_storage_key = 'poll_votes'
@@ -37,12 +41,44 @@ export default function Poll() {
 	const [selectedOption, setSelectedOption] = useState<number | null>(null)
 	const [hasUserVoted, setHasUserVoted] = useState<Record<number, boolean>>({})
 	const [polls, setPolls] = useState<Polls[]>([])
-	const [newPoll, setNewPoll] = useState({ question: '', answers: ['', ''] })
+	const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+	const [selectedTime, setSelectedTime] = useState<string>('00:00')
+	const [showVoteText, setShowVoteText] = useState<Record<number, boolean>>({})
+	const [newPoll, setNewPoll] = useState({
+		question: '',
+		answers: ['', ''],
+		timed: false,
+		until: null as Date | null,
+	})
 	const [activeTab, setActiveTab] = useState('0')
 	const [isLoading, setIsLoading] = useState(true)
 	const [isCreating, setIsCreating] = useState(false)
 	const [fingerprint, setFingerprint] = useState<string>('')
 	const isAdmin = session?.user?.role === 'admin'
+
+	const handleDateSelect = (date: Date | undefined) => {
+		setSelectedDate(date)
+		if (date) {
+			const [hours, minutes] = selectedTime.split(':')
+			const newDate = new Date(date)
+			newDate.setHours(parseInt(hours, 10), parseInt(minutes, 10))
+			setNewPoll(prev => ({ ...prev, until: newDate }))
+		} else {
+			setNewPoll(prev => ({ ...prev, until: null }))
+		}
+	}
+
+	const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const newTime = e.target.value
+		setSelectedTime(newTime)
+		if (selectedDate) {
+			const [hours, minutes] = newTime.split(':')
+			const newDate = new Date(selectedDate)
+			newDate.setHours(parseInt(hours, 10), parseInt(minutes, 10))
+			setNewPoll(prev => ({ ...prev, until: newDate }))
+		}
+	}
+
 	const handleNavigation = (direction: 'next' | 'prev') => {
 		const currentIndex = parseInt(activeTab)
 		const visiblePolls = isAdmin ? polls : polls.filter(p => p.visible)
@@ -112,12 +148,102 @@ export default function Poll() {
 			setPolls(polls.map(p => (p.id === pollId ? updatedPoll : p)))
 			setSelectedOption(null)
 			setHasUserVoted(prev => ({ ...prev, [pollId]: true }))
+			setShowVoteText(prev => ({ ...prev, [pollId]: true }))
 			recordLocalVote(pollId)
+
+			setTimeout(() => {
+				setShowVoteText(prev => ({ ...prev, [pollId]: false }))
+			}, 3000)
 		} catch (error) {
 			console.error('Failed to submit vote:', error)
 			toast.error(error instanceof Error ? error.message : 'Failed to submit vote')
 		}
 	}
+
+	const PollAdminActions = ({ poll }: { poll: Polls }) => (
+		<div className="border-t pt-4">
+			<div className="flex justify-center items-center">
+				<div className="flex gap-2 w-full">
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<Button variant="destructive" size="sm" className="w-full">
+								Delete Poll
+							</Button>
+						</AlertDialogTrigger>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>Remove Poll</AlertDialogTitle>
+								<AlertDialogDescription>
+									It is not recommended to remove polls as it will not save the votes.
+									Try to hide it instead.
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>Cancel</AlertDialogCancel>
+								<Button
+									variant="destructive"
+									onClick={async () => {
+										try {
+											await deletePoll(poll.id)
+											setPolls(polls.filter(p => p.id !== poll.id))
+											toast.success('Poll ended successfully')
+											if (
+												activeTab === polls.findIndex(p => p.id === poll.id).toString() &&
+												polls.length > 1
+											) {
+												setActiveTab('0')
+											}
+										} catch (error) {
+											console.error('Failed to delete poll:', error)
+											toast.error('Failed to delete poll')
+										}
+									}}
+								>
+									Delete
+								</Button>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => handleToggleVisibility(poll.id, !poll.visible)}
+						className="w-full"
+					>
+						{poll.visible ? 'Hide Poll' : 'Show Poll'}
+					</Button>
+					{!poll.endedAt && (
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button variant="secondary" size="sm" className="w-full">
+									End Poll
+								</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>End Poll</AlertDialogTitle>
+									<AlertDialogDescription>
+										Are you sure you want to end this poll? This action cannot be undone.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<Button
+										variant="destructive"
+										onClick={async () => {
+											await handleEndPoll(poll.id)
+										}}
+									>
+										End Poll
+									</Button>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+					)}
+				</div>
+			</div>
+		</div>
+	)
 
 	const handleCreatePoll = async () => {
 		if (!isAdmin || !newPoll.question || newPoll.answers.some(a => !a)) return
@@ -126,12 +252,18 @@ export default function Poll() {
 		try {
 			const poll = await createNewPoll(
 				newPoll.question,
-				newPoll.answers.filter(Boolean)
+				newPoll.answers.filter(Boolean),
+				newPoll.timed && newPoll.until ? newPoll.until : undefined
 			)
 			await handleToggleVisibility(poll.id, true)
 			const updatedPolls = await getAllPolls()
 			setPolls(updatedPolls)
-			setNewPoll({ question: '', answers: ['', ''] })
+			setNewPoll({
+				question: '',
+				answers: ['', ''],
+				timed: false,
+				until: null,
+			})
 
 			const visiblePolls = updatedPolls.filter(p => p.visible)
 			const newPollIndex = visiblePolls.findIndex(p => p.id === poll.id)
@@ -144,6 +276,21 @@ export default function Poll() {
 			setIsCreating(false)
 		}
 	}
+
+	const handleEndPoll = async (pollId: number) => {
+		if (!isAdmin) return
+
+		try {
+			await endPoll(pollId)
+			const updatedPolls = await getAllPolls()
+			setPolls(updatedPolls)
+			toast.success('Poll ended successfully')
+		} catch (error) {
+			console.error('Failed to end poll:', error)
+			toast.error('Failed to end poll')
+		}
+	}
+
 	const handleToggleVisibility = async (pollId: number, visible: boolean) => {
 		if (!isAdmin) return
 
@@ -270,12 +417,15 @@ export default function Poll() {
 															<h2 className="text-lg font-semibold [overflow-wrap:anywhere] text-black dark:text-white">
 																{poll.question}
 															</h2>
-															{hasUserVoted[poll.id] && (
-																<p className="text-sm text-blue-500">Thank you for voting!</p>
+															{(poll.endedAt ||
+																(!poll.endedAt && poll.until && isPast(poll.until))) && (
+																<p className="text-sm text-yellow-500">This poll has ended</p>
 															)}
 															{poll.answers.map((answer: string, answerIndex: number) => (
 																<div key={answerIndex} className="space-y-2">
-																	{!hasUserVoted[poll.id] ? (
+																	{!hasUserVoted[poll.id] &&
+																	!poll.endedAt &&
+																	(!poll.until || !isPast(poll.until)) ? (
 																		<RadioGroup
 																			value={selectedOption?.toString()}
 																			onValueChange={value => setSelectedOption(Number(value))}
@@ -318,78 +468,40 @@ export default function Poll() {
 																</div>
 															))}
 															<div className="mt-4 space-y-4">
-																{!hasUserVoted[poll.id] && (
-																	<Button
-																		onClick={() => handleVote(poll.id)}
-																		disabled={selectedOption === null}
-																		className="w-full"
-																	>
-																		Vote
-																	</Button>
-																)}
+																{!hasUserVoted[poll.id]
+																	? !poll.endedAt &&
+																	  (!poll.until || new Date() <= new Date(poll.until)) && (
+																			<Button
+																				onClick={() => handleVote(poll.id)}
+																				disabled={selectedOption === null}
+																				className="w-full"
+																			>
+																				Vote
+																			</Button>
+																	  )
+																	: showVoteText[poll.id] && (
+																			<p className="text-sm text-blue-500">
+																				Thank you for voting!
+																			</p>
+																	  )}
 															</div>
-															<p className="text-sm text-muted-foreground">
+															<p className="text-sm text-muted-foreground mt-2">
 																Total votes: {getTotalVotes(poll)}
 															</p>
+															{poll.until && !poll.endedAt && (
+																<p className="text-sm text-muted-foreground">
+																	Ends at: {format(poll.until, 'PPPp')}
+																</p>
+															)}
+															{poll.endedAt && (
+																<p className="text-sm text-muted-foreground">
+																	Ended at: {format(poll.endedAt, 'PPPp')}
+																</p>
+															)}
 														</section>
 													</AlertDialogDescription>
 
-													{isAdmin && (
-														<div className="border-t pt-4">
-															<div className="flex justify-center items-center">
-																<div className="flex gap-2 w-full">
-																	<AlertDialog>
-																		<AlertDialogTrigger asChild>
-																			<Button variant="destructive" size="sm" className="w-full">
-																				Delete Poll
-																			</Button>
-																		</AlertDialogTrigger>
-																		<AlertDialogContent>
-																			<AlertDialogHeader>
-																				<AlertDialogTitle>Remove Poll</AlertDialogTitle>
-																				<AlertDialogDescription>
-																					It is not recommended to remove polls as it will not save
-																					the votes. Try to hide it instead.
-																				</AlertDialogDescription>
-																			</AlertDialogHeader>
-																			<AlertDialogFooter>
-																				<AlertDialogCancel>Cancel</AlertDialogCancel>
-																				<Button
-																					variant="destructive"
-																					onClick={async () => {
-																						try {
-																							await deletePoll(poll.id)
-																							setPolls(polls.filter(p => p.id !== poll.id))
-																							toast.success('Poll deleted successfully')
-																							if (
-																								activeTab === index.toString() &&
-																								displayedPolls.length > 1
-																							) {
-																								setActiveTab('0')
-																							}
-																						} catch (error) {
-																							console.error('Failed to delete poll:', error)
-																							toast.error('Failed to delete poll')
-																						}
-																					}}
-																				>
-																					Delete
-																				</Button>
-																			</AlertDialogFooter>
-																		</AlertDialogContent>
-																	</AlertDialog>
-																	<Button
-																		variant="outline"
-																		size="sm"
-																		onClick={() => handleToggleVisibility(poll.id, !poll.visible)}
-																		className="w-full"
-																	>
-																		{poll.visible ? 'Hide Poll' : 'Show Poll'}
-																	</Button>
-																</div>
-															</div>
-														</div>
-													)}
+													{isAdmin && <PollAdminActions poll={poll} />}
 												</div>
 											</TabsContent>
 										))
@@ -460,12 +572,15 @@ export default function Poll() {
 													<h2 className="text-lg font-semibold [overflow-wrap:anywhere] text-black dark:text-white">
 														{poll.question}
 													</h2>
-													{hasUserVoted[poll.id] && (
-														<p className="text-sm text-blue-500">Thank you for voting!</p>
+													{(poll.endedAt ||
+														(!poll.endedAt && poll.until && isPast(poll.until))) && (
+														<p className="text-sm text-yellow-500">This poll has ended</p>
 													)}
 													{poll.answers.map((answer: string, answerIndex: number) => (
 														<div key={answerIndex} className="space-y-2">
-															{!hasUserVoted[poll.id] ? (
+															{!hasUserVoted[poll.id] &&
+															!poll.endedAt &&
+															(!poll.until || new Date() <= new Date(poll.until)) ? (
 																<RadioGroup
 																	value={selectedOption?.toString()}
 																	onValueChange={value => setSelectedOption(Number(value))}
@@ -505,79 +620,40 @@ export default function Poll() {
 															)}
 														</div>
 													))}
+
 													<div className="mt-4 space-y-4">
-														{!hasUserVoted[poll.id] && (
-															<Button
-																onClick={() => handleVote(poll.id)}
-																disabled={selectedOption === null}
-																className="w-full"
-															>
-																Vote
-															</Button>
-														)}
+														{!hasUserVoted[poll.id]
+															? !poll.endedAt &&
+															  (!poll.until || new Date() <= new Date(poll.until)) && (
+																	<Button
+																		onClick={() => handleVote(poll.id)}
+																		disabled={selectedOption === null}
+																		className="w-full"
+																	>
+																		Vote
+																	</Button>
+															  )
+															: showVoteText[poll.id] && (
+																	<p className="text-sm text-blue-500">Thank you for voting!</p>
+															  )}
 													</div>
 													<p className="text-sm text-muted-foreground">
 														Total votes: {getTotalVotes(poll)}
 													</p>
+													{poll.until && !poll.endedAt && (
+														<p className="text-sm text-muted-foreground">
+															Ends at: {format(poll.until, 'PPPp')}
+														</p>
+													)}
+													{poll.endedAt && (
+														<p className="text-sm text-muted-foreground">
+															Ended at: {format(poll.endedAt, 'PPPp')}
+														</p>
+													)}
 												</section>
 											</AlertDialogDescription>
 
-											{isAdmin && (
-												<div className="border-t pt-4">
-													<div className="flex justify-between items-center">
-														<div className="flex gap-2 w-full">
-															<AlertDialog>
-																<AlertDialogTrigger asChild>
-																	<Button variant="destructive" size="sm" className="w-full">
-																		Delete Poll
-																	</Button>
-																</AlertDialogTrigger>
-																<AlertDialogContent>
-																	<AlertDialogHeader>
-																		<AlertDialogTitle>Remove Poll</AlertDialogTitle>
-																		<AlertDialogDescription>
-																			It is not recommended to remove polls as it will not save the
-																			votes. Try to hide it instead.
-																		</AlertDialogDescription>
-																	</AlertDialogHeader>
-																	<AlertDialogFooter>
-																		<AlertDialogCancel>Cancel</AlertDialogCancel>
-																		<Button
-																			variant="destructive"
-																			onClick={async () => {
-																				try {
-																					await deletePoll(poll.id)
-																					setPolls(polls.filter(p => p.id !== poll.id))
-																					toast.success('Poll deleted successfully')
-																					if (
-																						activeTab === index.toString() &&
-																						displayedPolls.length > 1
-																					) {
-																						setActiveTab('0')
-																					}
-																				} catch (error) {
-																					console.error('Failed to delete poll:', error)
-																					toast.error('Failed to delete poll')
-																				}
-																			}}
-																		>
-																			Delete
-																		</Button>
-																	</AlertDialogFooter>
-																</AlertDialogContent>
-															</AlertDialog>
-															<Button
-																variant="outline"
-																size="sm"
-																onClick={() => handleToggleVisibility(poll.id, !poll.visible)}
-																className="w-full"
-															>
-																{poll.visible ? 'Hide Poll' : 'Show Poll'}
-															</Button>
-														</div>
-													</div>
-												</div>
-											)}
+											{isAdmin && <PollAdminActions poll={poll} />}
 										</div>
 									</div>
 								))
@@ -594,83 +670,117 @@ export default function Poll() {
 							<AlertDialogContent>
 								<AlertDialogHeader>
 									<AlertDialogTitle>Create New Poll</AlertDialogTitle>
-									<AlertDialogDescription asChild>
-										<div className="space-y-4">
-											<div className="text-foreground">
-												<label className="block text-sm font-medium mb-1">Question</label>
-												<Input
-													type="text"
-													value={newPoll.question}
-													onChange={e => {
-														const value = e.target.value.slice(0, max_questions)
-														setNewPoll(prev => ({ ...prev, question: value }))
-													}}
-													placeholder="Enter your question"
-													maxLength={max_questions}
-												/>
-											</div>
-											<div className="space-y-2 text-black dark:text-white">
-												<label className="block text-sm font-medium">Answers</label>
-												{newPoll.answers.map((answer, i) => (
-													<div key={i} className="flex gap-2">
-														<Input
-															type="text"
-															value={answer}
-															onChange={e =>
+								</AlertDialogHeader>
+								<ScrollArea className="max-h-[70vh]">
+									<div className="space-y-4">
+										<div className="text-foreground">
+											<label className="block text-sm font-medium mb-1">Question</label>
+											<Input
+												type="text"
+												value={newPoll.question}
+												onChange={e => {
+													const value = e.target.value.slice(0, max_questions)
+													setNewPoll(prev => ({ ...prev, question: value }))
+												}}
+												placeholder="Enter your question"
+												maxLength={max_questions}
+											/>
+										</div>
+										<div className="space-y-2 text-black dark:text-white">
+											<label className="block text-sm font-medium">Answers</label>
+											{newPoll.answers.map((answer, i) => (
+												<div key={i} className="flex gap-2">
+													<Input
+														type="text"
+														value={answer}
+														onChange={e =>
+															setNewPoll(prev => ({
+																...prev,
+																answers: prev.answers.map((a, index) =>
+																	index === i ? e.target.value : a
+																),
+															}))
+														}
+														placeholder={`Answer ${i + 1}`}
+														maxLength={max_questions}
+													/>
+													{newPoll.answers.length > 2 && (
+														<Button
+															variant="destructive"
+															size="icon"
+															onClick={() =>
 																setNewPoll(prev => ({
 																	...prev,
-																	answers: prev.answers.map((a, index) =>
-																		index === i ? e.target.value : a
-																	),
+																	answers: prev.answers.filter((_, index) => index !== i),
 																}))
 															}
-															placeholder={`Answer ${i + 1}`}
-															maxLength={max_questions}
-														/>
-														{newPoll.answers.length > 2 && (
-															<Button
-																variant="destructive"
-																size="icon"
-																onClick={() =>
-																	setNewPoll(prev => ({
-																		...prev,
-																		answers: prev.answers.filter((_, index) => index !== i),
-																	}))
-																}
-															>
-																<X className="size-4" />
-															</Button>
-														)}
-													</div>
-												))}
-												<Button
-													onClick={() =>
-														setNewPoll(prev => ({
-															...prev,
-															answers: [...prev.answers, ''],
-														}))
-													}
-													variant="outline"
-													className="w-full"
-													disabled={newPoll.answers.length >= max_answers}
-												>
-													Add Answer Option ({newPoll.answers.length}/{max_answers})
-												</Button>
-											</div>
-											<AlertDialogFooter>
-												<AlertDialogCancel>Cancel</AlertDialogCancel>
-												<Button
-													onClick={handleCreatePoll}
-													disabled={
-														!newPoll.question || newPoll.answers.some(a => !a) || isCreating
-													}
-												>
-													{isCreating ? 'Creating...' : 'Create Poll'}
-												</Button>
-											</AlertDialogFooter>
+														>
+															<X className="size-4" />
+														</Button>
+													)}
+												</div>
+											))}
+											<Button
+												onClick={() =>
+													setNewPoll(prev => ({
+														...prev,
+														answers: [...prev.answers, ''],
+													}))
+												}
+												variant="outline"
+												className="w-full"
+												disabled={newPoll.answers.length >= max_answers}
+											>
+												Add Answer Option ({newPoll.answers.length}/{max_answers})
+											</Button>
 										</div>
-									</AlertDialogDescription>
-								</AlertDialogHeader>
+										<div className="space-y-4">
+											<div className="flex items-center justify-between">
+												<label className="text-sm font-medium">Set poll end time</label>
+												<Switch
+													checked={newPoll.timed}
+													onCheckedChange={checked =>
+														setNewPoll(prev => ({ ...prev, timed: checked }))
+													}
+												/>
+											</div>
+											{newPoll.timed && (
+												<div className="space-y-4">
+													<Calendar
+														mode="single"
+														selected={selectedDate}
+														onSelect={handleDateSelect}
+														disabled={date => isBefore(date, new Date())}
+														className="rounded-md border w-full flex justify-center items-center"
+													/>
+													<div>
+														<label className="text-sm font-medium">Time</label>
+														<Input
+															type="time"
+															value={selectedTime}
+															onChange={handleTimeChange}
+															className="mt-1"
+														/>
+													</div>
+												</div>
+											)}
+										</div>
+										<AlertDialogFooter>
+											<AlertDialogCancel>Cancel</AlertDialogCancel>
+											<Button
+												onClick={handleCreatePoll}
+												disabled={
+													!newPoll.question ||
+													newPoll.answers.some(a => !a) ||
+													isCreating ||
+													(newPoll.timed && !newPoll.until)
+												}
+											>
+												{isCreating ? 'Creating...' : 'Create Poll'}
+											</Button>
+										</AlertDialogFooter>
+									</div>
+								</ScrollArea>
 							</AlertDialogContent>
 						</AlertDialog>
 					)}

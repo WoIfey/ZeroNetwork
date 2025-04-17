@@ -66,7 +66,28 @@ type Polls = {
     visible: boolean;
     createdAt: Date;
     updatedAt: Date;
+    until: Date | null;
+    endedAt: Date | null;
+    pollVotes?: PollVote[];
     _count?: {
         pollVotes: number;
     };
+}
+
+type PollVote = {
+    id: number;
+    pollId: number;
+    ipHash: string;
+    fingerprint: string;
+    votedOption: number;
+    createdAt: Date;
+}
+
+type Embed = {
+    title?: string;
+    description?: string;
+    color?: number;
+    fields?: { name: string; value: string; inline?: boolean }[];
+    footer?: { text: string };
+    timestamp?: string;
 }
