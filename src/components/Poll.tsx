@@ -366,12 +366,13 @@ export default function Poll() {
 												key={poll.id}
 												value={index.toString()}
 												className={`${
-													isAdmin ||
-													hasUserVoted[poll.id] ||
-													poll.endedAt ||
-													(poll.until !== null &&
-														poll.until !== undefined &&
-														isPast(poll.until))
+													isAdmin
+														? 'px-4'
+														: hasUserVoted[poll.id] ||
+														  poll.endedAt ||
+														  (poll.until !== null &&
+																poll.until !== undefined &&
+																isPast(poll.until))
 														? 'px-0'
 														: 'px-4'
 												} data-[state=active]:after:bg-primary relative w-full justify-start rounded-none after:absolute after:inset-y-0 after:end-0 after:w-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none`}
@@ -458,7 +459,15 @@ export default function Poll() {
 																			<div className="flex justify-between items-baseline gap-2 text-sm text-foreground">
 																				<span>{answer}</span>
 																				<span className="whitespace-nowrap">
-																					{poll.votes[answerIndex]} votes
+																					{poll.votes[answerIndex]} vote
+																					{poll.votes[answerIndex] !== 1 ? 's' : ''} (
+																					{Math.round(
+																						getVotePercentage(
+																							poll.votes[answerIndex],
+																							getTotalVotes(poll)
+																						)
+																					)}
+																					%)
 																				</span>
 																			</div>
 																			<div className="w-full bg-muted rounded-full h-2.5">
@@ -611,7 +620,15 @@ export default function Poll() {
 																	<div className="flex justify-between items-center gap-2 text-sm text-foreground">
 																		<span>{answer}</span>
 																		<span className="whitespace-nowrap">
-																			{poll.votes[answerIndex]} votes
+																			{poll.votes[answerIndex]} vote
+																			{poll.votes[answerIndex] !== 1 ? 's' : ''} (
+																			{Math.round(
+																				getVotePercentage(
+																					poll.votes[answerIndex],
+																					getTotalVotes(poll)
+																				)
+																			)}
+																			%)
 																		</span>
 																	</div>
 																	<div className="w-full bg-muted rounded-full h-2.5">
