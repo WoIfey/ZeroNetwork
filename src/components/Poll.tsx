@@ -485,7 +485,7 @@ export default function Poll() {
 																					className="order-1 after:absolute after:inset-0"
 																				/>
 																				<div className="grid grow gap-2">
-																					<span className="text-sm text-foreground [overflow-wrap:anywhere]">
+																					<span className="text-sm text-foreground [overflow-wrap:anywhere] pr-2">
 																						{answer}
 																					</span>
 																				</div>
@@ -632,7 +632,10 @@ export default function Poll() {
 														<p className="text-sm text-yellow-500">This poll has ended</p>
 													)}
 													{poll.answers.map((answer: string, answerIndex: number) => (
-														<div key={answerIndex} className="space-y-2">
+														<div
+															key={answerIndex}
+															className="space-y-2 [overflow-wrap:anywhere]"
+														>
 															{!hasUserVoted[poll.id] &&
 															!poll.endedAt &&
 															(!poll.until || new Date() <= new Date(poll.until)) ? (
@@ -648,7 +651,9 @@ export default function Poll() {
 																			className="order-1 after:absolute after:inset-0"
 																		/>
 																		<div className="grid grow gap-2">
-																			<span className="text-sm text-foreground">{answer}</span>
+																			<span className="text-sm text-foreground pr-2">
+																				{answer}
+																			</span>
 																		</div>
 																	</div>
 																</RadioGroup>
