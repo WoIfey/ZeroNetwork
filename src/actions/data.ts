@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { sendWebhook } from '@/lib/webhook';
 
 export async function fetchData(): Promise<ServerConfig | null> {
     return await prisma.servers.findFirst({
@@ -30,6 +31,19 @@ export async function updateServerIps(id: number, index: string, ip: string) {
 
     const updatedIps = [...data.ips]
     updatedIps[parseInt(index)] = ip
+
+    await sendWebhook({
+        embeds: [{
+            title: "Server IPs Updated",
+            color: 0x3deb34,
+            fields: updatedIps.map((ip, index) => ({
+                name: `IP ${index + 1}`,
+                value: ip,
+                inline: true
+            })),
+            timestamp: new Date().toISOString()
+        }]
+    });
 
     return prisma.servers.update({
         where: { id },

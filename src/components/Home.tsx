@@ -21,8 +21,8 @@ export default function Home({ data }: ComponentProps) {
 			</div>
 			<div className="container mx-auto px-6 lg:px-8">
 				<Timeline data={data} />
-				<WithersWrath />
 				<Description />
+				<WithersWrath />
 				<Team />
 			</div>
 			<Footer />

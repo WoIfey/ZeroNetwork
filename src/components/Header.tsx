@@ -265,6 +265,7 @@ export default function Header({ data }: ComponentProps) {
 												alt="Wolfey"
 												className="object-contain"
 												priority
+												sizes="(max-width: 768px) 100vw, 33vw"
 											/>
 										</div>
 										<div className="relative size-72 sm:size-96 2xl:translate-x-32 mt-52 2xl:mt-0 animate-float-delayed">
@@ -274,6 +275,7 @@ export default function Header({ data }: ComponentProps) {
 												alt="ImHer0"
 												className="object-contain"
 												priority
+												sizes="(max-width: 768px) 100vw, 33vw"
 											/>
 										</div>
 									</div>
@@ -298,7 +300,7 @@ export default function Header({ data }: ComponentProps) {
 											</Button>
 										</div>
 									)}
-									{serverVisibility[0] && (
+									{(isAdmin || serverVisibility[0]) && (
 										<Alert className="mb-2 bg-transparent border-none p-0 py-2">
 											<AlertDescription className="flex flex-col md:flex-row justify-center items-center gap-2">
 												<AlertCircle className="size-4" />
@@ -381,18 +383,18 @@ export default function Header({ data }: ComponentProps) {
 										)}
 									</Button>
 								</div>
-							)}{' '}
+							)}
 							<div
 								className={`grid gap-4 ${
-									serverVisibility[1] && serverVisibility[2]
+									isAdmin || (serverVisibility[1] && serverVisibility[2])
 										? 'grid-cols-1 md:grid-cols-2'
 										: 'grid-cols-1'
 								}`}
 							>
-								{serverVisibility[1] &&
+								{(isAdmin || serverVisibility[1]) &&
 									(isLoading || servers[0]) &&
 									renderServerCard(servers[0], 0)}
-								{serverVisibility[2] &&
+								{(isAdmin || serverVisibility[2]) &&
 									(isLoading || servers[1]) &&
 									renderServerCard(servers[1], 1)}
 							</div>

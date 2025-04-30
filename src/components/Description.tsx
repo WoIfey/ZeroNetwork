@@ -31,7 +31,7 @@ const facts = [
 
 export default function Description() {
 	return (
-		<div className="py-12 sm:py-16">
+		<div className="py-8 sm:py-10">
 			<div className="mx-auto max-w-7xl">
 				<motion.div
 					className="mx-auto max-w-3xl text-center"
@@ -51,28 +51,33 @@ export default function Description() {
 					</div>
 				</motion.div>
 
-				<div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2 xl:grid-cols-4">
+				<div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-6 sm:gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:grid-rows-2">
 					{facts.map((fact, index) => (
 						<motion.div
 							key={fact.name}
-							className="relative rounded-xl bg-gradient-to-r from-gray-200/20 to-gray-900/10 dark:from-gray-500/10 dark:to-gray-900/20 p-8"
+							className={`group relative rounded-3xl p-8 transition-all duration-300
+				${
+					index === 0 || index === facts.length - 1
+						? 'lg:col-span-2 bg-gradient-to-br from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20'
+						: 'bg-gradient-to-br from-gray-200/20 to-gray-900/10 hover:from-gray-200/30 hover:to-gray-900/20 dark:from-gray-500/10 dark:to-gray-900/20 dark:hover:from-gray-500/20 dark:hover:to-gray-900/30'
+				}`}
 							initial={{ opacity: 0, y: 20 }}
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true }}
 							transition={{ duration: 0.5, delay: index * 0.1 }}
 						>
 							<div className="mb-4">
-								<fact.icon className="size-8 text-blue-500 group-hover:scale-110 transition-transform duration-300" />
+								<fact.icon className="size-10 text-blue-500 group-hover:scale-110 group-hover:text-blue-600 transition-all duration-300" />
 							</div>
-							<dt className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+							<dt className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
 								{fact.name}
 							</dt>
-							<dd className="text-gray-600 dark:text-gray-300">
+							<dd className="text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
 								{fact.link ? (
 									<Link
 										href={fact.link}
 										target="_blank"
-										className="text-blue-500 hover:text-blue-600 transition-colors"
+										className="text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-2 group-hover:gap-3"
 									>
 										{fact.description}
 									</Link>

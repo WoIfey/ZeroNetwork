@@ -25,7 +25,7 @@ const members = [
 
 export default function Team() {
 	return (
-		<div className="container mx-auto py-16 px-4">
+		<div className="container mx-auto py-12 sm:py-24 px-4">
 			<h2 className="text-center font-syne text-4xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-12">
 				Meet the Team
 			</h2>
@@ -55,7 +55,7 @@ export default function Team() {
 									priority
 								/>
 							</motion.div>
-							<h3 className="text-center mt-8 text-2xl md:text-3xl font-bold leading-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors">
+							<h3 className="text-center mt-8 text-2xl md:text-3xl font-bold font-syne leading-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors">
 								{member.name}
 							</h3>
 						</a>
