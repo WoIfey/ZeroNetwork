@@ -58,7 +58,7 @@ export default function Description() {
 							className={`group relative rounded-3xl p-8 transition-all duration-300
 				${
 					index === 0 || index === facts.length - 1
-						? 'lg:col-span-2 bg-gradient-to-br lg:from-blue-500/10 lg:to-purple-500/10 lg:hover:from-blue-500/20 lg:hover:to-purple-500/20'
+						? 'lg:col-span-2 bg-gradient-to-br from-gray-200/20 to-gray-900/10 dark:from-gray-500/10 dark:to-gray-900/20 lg:from-blue-500/10 lg:to-purple-500/10 dark:lg:from-blue-500/10 dark:lg:to-purple-500/10 dark:lg:hover:from-blue-500/20 dark:lg:hover:to-purple-500/20 lg:hover:from-blue-500/20 lg:hover:to-purple-500/20'
 						: 'bg-gradient-to-br from-gray-200/20 to-gray-900/10 lg:hover:from-gray-200/30 lg:hover:to-gray-900/20 dark:from-gray-500/10 dark:to-gray-900/20 lg:dark:hover:from-gray-500/20 lg:dark:hover:to-gray-900/30'
 				}`}
 							initial={{ opacity: 0, y: 20 }}

@@ -119,7 +119,7 @@ export default function Header({ data }: ComponentProps) {
 	)
 
 	const StatusIndicator = ({ server }: { server: ServerInfo }) => (
-		<div className="relative">
+		<div className="relative mt-2">
 			<div
 				className={`size-3 rounded-full ring-2 ring-opacity-30 ${
 					server.online ? 'bg-green-500 ring-green-500' : 'bg-red-500 ring-red-500'
@@ -151,8 +151,8 @@ export default function Header({ data }: ComponentProps) {
 
 		return (
 			<Card className="bg-background/50 border shadow-lg transition-all max-w-3xl mx-auto w-full">
-				<CardHeader className="p-4">
-					<CardTitle className="flex items-center justify-between">
+				<CardHeader className="p-4 py-3">
+					<CardTitle className="flex items-start justify-between">
 						<div className="flex items-center gap-3">
 							{server.icon && (
 								<Image
