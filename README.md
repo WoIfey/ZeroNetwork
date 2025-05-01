@@ -1,8 +1,9 @@
-# ZeroNetwork
+
+![Header](https://github.com/user-attachments/assets/98339f15-4e14-44f0-9201-4739841145c6)
 
 Check out our minecraft server where we host different modpacks and more, this is mostly for our friends.
 
-## Setup
+## Building
 
 1. **Clone the repository**
 
@@ -22,13 +23,17 @@ pnpm install
 Copy the `env.example` file and rename it to `.env`:
 
 ```bash
-pnpm docker
+pnpm db:start
 ```
 
-4. **Run database migrations**
+4. **Run database migrations and seed it**
 
 ```bash
 pnpm prisma
+```
+
+```bash
+pnpm db:seed
 ```
 
 5. **Start the development server and prisma studio**
