@@ -51,9 +51,9 @@ export async function updateServerIps(id: number, index: string, ip: string) {
     })
 }
 
-export async function updateServerVisibility(id: number, visibility: boolean[]) {
+export async function updateVisibility(id: number, visible: boolean[]) {
     return prisma.servers.update({
         where: { id },
-        data: { visible: visibility },
+        data: { visible },
     })
 }

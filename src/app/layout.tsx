@@ -3,9 +3,10 @@ import { Inter, Syne } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
-import { VercelToolbar } from '@vercel/toolbar/next'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { StaffToolbar } from '@/components/Toolbar'
+import { Suspense } from 'react'
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] })
 const syne = Syne({ variable: '--font-syne', subsets: ['latin'] })
@@ -46,7 +47,9 @@ export default async function RootLayout({
 				>
 					{children}
 					<Toaster position="bottom-center" />
-					<VercelToolbar />
+					<Suspense>
+						<StaffToolbar />
+					</Suspense>
 					<Analytics />
 					<SpeedInsights />
 				</ThemeProvider>

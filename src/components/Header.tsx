@@ -17,8 +17,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import * as Editable from '@/components/ui/editable'
-import { updateServerIps } from '@/actions/data'
-import { updateAlert, updateAlertVisibility } from '@/actions/alert'
+import { updateServerIps, updateVisibility } from '@/actions/data'
+import { updateAlert } from '@/actions/alert'
 import { authClient } from '@/lib/auth-client'
 import Poll from './Poll'
 
@@ -92,7 +92,7 @@ export default function Header({ data }: ComponentProps) {
 			newVisibility[serverIndex] = !newVisibility[serverIndex]
 
 			try {
-				await updateAlertVisibility(Number(data.id), newVisibility)
+				await updateVisibility(Number(data.id), newVisibility)
 				setServerVisibility(newVisibility)
 				toast.success('Visibility updated successfully!')
 			} catch (error) {
@@ -290,11 +290,11 @@ export default function Header({ data }: ComponentProps) {
 											>
 												{serverVisibility[0] ? (
 													<>
-														<EyeOff className="mr-2 size-4" /> Hide Alert
+														<EyeOff className="size-4" /> Hide Alert
 													</>
 												) : (
 													<>
-														<Eye className="mr-2 size-4" /> Show Alert
+														<Eye className="size-4" /> Show Alert
 													</>
 												)}
 											</Button>
@@ -359,11 +359,11 @@ export default function Header({ data }: ComponentProps) {
 									>
 										{serverVisibility[1] ? (
 											<>
-												<EyeOff className="mr-2 size-4" /> Hide Server 1
+												<EyeOff className="size-4" /> Hide Server 1
 											</>
 										) : (
 											<>
-												<Eye className="mr-2 size-4" /> Show Server 1
+												<Eye className="size-4" /> Show Server 1
 											</>
 										)}
 									</Button>
@@ -374,11 +374,11 @@ export default function Header({ data }: ComponentProps) {
 									>
 										{serverVisibility[2] ? (
 											<>
-												<EyeOff className="mr-2 size-4" /> Hide Server 2
+												<EyeOff className="size-4" /> Hide Server 2
 											</>
 										) : (
 											<>
-												<Eye className="mr-2 size-4" /> Show Server 2
+												<Eye className="size-4" /> Show Server 2
 											</>
 										)}
 									</Button>

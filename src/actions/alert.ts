@@ -17,10 +17,3 @@ export async function updateAlert(serverId: number, alert: string) {
         data: { alert }
     });
 }
-
-export async function updateAlertVisibility(serverId: number, visible: boolean[]) {
-    return await prisma.servers.update({
-        where: { id: serverId },
-        data: { visible }
-    });
-}

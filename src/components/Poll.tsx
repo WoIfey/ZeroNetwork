@@ -349,7 +349,7 @@ export default function Poll() {
 		<div className="pt-6">
 			<AlertDialog>
 				<AlertDialogTrigger asChild>
-					<Button variant="outline">
+					<Button variant="ghost">
 						<div className="relative mr-2">
 							<div className="size-3 rounded-full ring-2 ring-opacity-30 bg-green-500 ring-green-500" />
 							<div className="absolute inset-0 rounded-full bg-green-500/50 animate-ping" />
