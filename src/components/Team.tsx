@@ -17,9 +17,9 @@ const members = [
 		name: 'Wolfey',
 		role: 'Web Developer',
 		location: 'Finland',
-		description: 'hi i do some web stuff and this site',
+		description: 'hi i do some web stuff and this site and some mc server stuff',
 		image: 'https://wolfey.s-ul.eu/GdEOHutp',
-		url: 'https://github.com/WoIfey',
+		url: 'https://github.com/Wufler',
 	},
 ]
 
