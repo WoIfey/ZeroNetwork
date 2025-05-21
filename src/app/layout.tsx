@@ -3,8 +3,8 @@ import { Inter, Syne } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
-import Dev from '@/components/Dev'
-import { flag } from 'flags/next'
+import { VercelToolbar } from '@vercel/toolbar/next'
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] })
 const syne = Syne({ variable: '--font-syne', subsets: ['latin'] })
@@ -29,32 +29,11 @@ export const metadata: Metadata = {
 	},
 }
 
-const devFlag = flag<boolean>({
-	key: 'dev',
-	defaultValue: false,
-	description: 'Make the site show a maintenance page.',
-	decide() {
-		return false
-	},
-})
-
 export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode
 }>) {
-	const flag = await devFlag()
-
-	if (flag) {
-		return (
-			<html lang="en" suppressHydrationWarning>
-				<body className={inter.variable}>
-					<Dev />
-				</body>
-			</html>
-		)
-	}
-
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${inter.className} ${syne.variable}`}>
@@ -66,6 +45,8 @@ export default async function RootLayout({
 				>
 					{children}
 					<Toaster position="bottom-center" />
+					<VercelToolbar />
+					<Analytics />
 				</ThemeProvider>
 			</body>
 		</html>
