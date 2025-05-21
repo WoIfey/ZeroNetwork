@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
 import { VercelToolbar } from '@vercel/toolbar/next'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] })
 const syne = Syne({ variable: '--font-syne', subsets: ['latin'] })
@@ -47,6 +48,7 @@ export default async function RootLayout({
 					<Toaster position="bottom-center" />
 					<VercelToolbar />
 					<Analytics />
+					<SpeedInsights />
 				</ThemeProvider>
 			</body>
 		</html>
